@@ -7,9 +7,9 @@
 // a una base de datos real no obligue a modificar la capa de servicio.
 // =====================================================================
 const envios = [
-  { id: 1, codigo: 'ENV-001', origen: 'Cali', destino: 'Bogotá', estado: 'en transito', clienteId: 1 },
-  { id: 2, codigo: 'ENV-002', origen: 'Medellín', destino: 'Cali', estado: 'entregado', clienteId: 2 },
-  { id: 3, codigo: 'ENV-003', origen: 'Cali', destino: 'Cartagena', estado: 'pendiente', clienteId: 1 },
+  { id: 1, codigo: 'ENV-001', origen: 'Cali', destino: 'Bogotá', estado: 'en transito', cliente_id: 1 },
+  { id: 2, codigo: 'ENV-002', origen: 'Medellín', destino: 'Cali', estado: 'entregado', cliente_id: 2 },
+  { id: 3, codigo: 'ENV-003', origen: 'Cali', destino: 'Cartagena', estado: 'pendiente', cliente_id: 1 },
 ];
 let siguienteId = 4;
 
