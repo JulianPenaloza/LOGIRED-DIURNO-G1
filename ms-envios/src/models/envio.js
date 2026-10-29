@@ -24,8 +24,8 @@ function validarEnvio(datos) {
   if (datos.estado && !ESTADOS_VALIDOS.includes(datos.estado.toLowerCase())) {
     errores.push(`estado debe ser uno de: ${ESTADOS_VALIDOS.join(', ')}`);
   }
-  if (datos.clienteId === undefined || typeof datos.clienteId !== 'number') {
-    errores.push('clienteId es obligatorio y debe ser un número entero');
+  if (datos.cliente_id === undefined || typeof datos.cliente_id !== 'number') {
+    errores.push('cliente_id es obligatorio y debe ser un número entero');
   }
   return errores;
 }
@@ -37,7 +37,7 @@ function construirEnvio(datos) {
     origen: datos.origen.trim(),
     destino: datos.destino.trim(),
     estado: datos.estado ? datos.estado.toLowerCase() : 'pendiente',
-    clienteId: datos.clienteId
+    cliente_id: datos.cliente_id
   };
 }
 

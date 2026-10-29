@@ -32,4 +32,28 @@ async function crear(datos) {
   return repo.create(envio);
 }
 
-module.exports = { listar, obtener, crear };
+async function obtenerPorCodigo(codigo) {
+  return await repo.findByCodigo(codigo);
+}
+
+async function obtenerPorEstado(estado) {
+  return await repo.findByEstado(estado.toLowerCase());
+}
+
+async function obtenerPorCliente(cliente_id) {
+  return await repo.findByCliente(cliente_id);
+}
+
+async function eliminar(id) {
+  return await repo.remove(id);
+}
+
+module.exports = { 
+  listar, 
+  obtener, 
+  crear, 
+  obtenerPorCodigo, 
+  obtenerPorEstado, 
+  obtenerPorCliente, 
+  eliminar 
+};
