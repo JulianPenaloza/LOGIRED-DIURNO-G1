@@ -31,4 +31,27 @@ async function create(envio) {
   return nuevo;
 }
 
-module.exports = { findAll, findById, findByCodigo, create };
+async function findByEstado(estado) {
+  return envios.filter((e) => e.estado === estado);
+}
+
+async function findByCliente(cliente_id) {
+  return envios.filter((e) => e.cliente_id === cliente_id);
+}
+
+async function remove(id) {
+  const index = envios.findIndex((e) => e.id === id);
+  if (index === -1) return false;
+  envios.splice(index, 1);
+  return true;
+}
+
+module.exports = { 
+  findAll, 
+  findById, 
+  findByCodigo, 
+  create, 
+  findByEstado, 
+  findByCliente, 
+  remove 
+};
