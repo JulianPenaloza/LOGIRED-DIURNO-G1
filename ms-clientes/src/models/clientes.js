@@ -6,6 +6,7 @@
 
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DOCUMENTO_VALIDO = /^\d{6,15}$/;
+const TELEFONO_VALIDO = /^\d{7,10}$/;
 
 // Devuelve una lista de errores de validación (vacía si todo está bien)
 function validarCliente(datos) {
@@ -19,9 +20,9 @@ function validarCliente(datos) {
   if (typeof datos.documento !== 'string' || !DOCUMENTO_VALIDO.test(datos.documento.trim())) {
     errores.push('documento es obligatorio y debe tener entre 6 y 15 dígitos');
   }
-  if (!datos.telefono || typeof datos.telefono !== 'string' || datos.telefono.trim() === '') {
-    errores.push('telefono es obligatorio');
-  }
+  if (typeof datos.telefono !== 'string' || !TELEFONO_VALIDO.test(datos.telefono.trim())) {
+  errores.push('telefono es obligatorio y debe tener entre 7 y 10 dígitos');
+}
   if (typeof datos.email !== 'string' || !EMAIL_VALIDO.test(datos.email.trim())) {
     errores.push('email es obligatorio y debe tener un formato válido');
   }
