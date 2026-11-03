@@ -1,57 +1,59 @@
 // =====================================================================
-// CAPA DE ACCESO A DATOS (repositorio)
-// Única capa que sabe DÓNDE se guardan los datos.
-// Versión del Taller 1: datos en memoria (se pierden al reiniciar).
-// En el Taller 2 se reemplaza por MySQL SIN tocar las otras capas.
-// Todas las funciones son async (devuelven promesas) para que el cambio
-// a una base de datos real no obligue a modificar la capa de servicio.
+// CAPA DE ACCESO A DATOS (repositorio - VERSIÓN MySQL)
+// Guarda y consulta los datos en la base de datos envios_db.
 // =====================================================================
-const envios = [
-  { id: 1, codigo: 'ENV-001', origen: 'Cali', destino: 'Bogotá', estado: 'en transito', cliente_id: 1 },
-  { id: 2, codigo: 'ENV-002', origen: 'Medellín', destino: 'Cali', estado: 'entregado', cliente_id: 2 },
-  { id: 3, codigo: 'ENV-003', origen: 'Cali', destino: 'Cartagena', estado: 'pendiente', cliente_id: 1 },
-];
-let siguienteId = 4;
+const pool = require('../db');
 
-async function findAll() {
-  return envios;
+function aEnvio(fila) {
+  return { ...fila };
+}
+
+async function findAll(filtros = {}) {
+  let sql = 'SELECT * FROM envios';
+  const condiciones = [];
+  const valores = [];
+
+  if (filtros.estado) {
+    condiciones.push('estado = ?');
+    valores.push(filtros.estado);
+  }
+
+  if (condiciones.length > 0) {
+    sql += ' WHERE ' + condiciones.join(' AND ');
+  }
+
+  const [filas] = await pool.query(sql + ' ORDER BY id', valores);
+  return filas.map(aEnvio);
 }
 
 async function findById(id) {
-  return envios.find((e) => e.id === id) || null;
+  const [filas] = await pool.query('SELECT * FROM envios WHERE id = ?', [id]);
+  return filas.length > 0 ? aEnvio(filas[0]) : null;
 }
 
 async function findByCodigo(codigo) {
-  return envios.find((e) => e.codigo === codigo) || null;
+  const [filas] = await pool.query('SELECT * FROM envios WHERE codigo = ?', [codigo]);
+  return filas.length > 0 ? aEnvio(filas[0]) : null;
 }
 
 async function create(envio) {
-  const nuevo = { id: siguienteId++, ...envio };
-  envios.push(nuevo);
-  return nuevo;
+  const [resultado] = await pool.query(
+    'INSERT INTO envios (codigo, origen, destino, estado, cliente_id) VALUES (?, ?, ?, ?, ?)',
+    [envio.codigo, envio.origen, envio.destino, envio.estado, envio.cliente_id]
+  );
+  return findById(resultado.insertId);
 }
 
-async function findByEstado(estado) {
-  return envios.filter((e) => e.estado === estado);
-}
-
-async function findByCliente(cliente_id) {
-  return envios.filter((e) => e.cliente_id === cliente_id);
+async function update(id, envio) {
+  await pool.query(
+    'UPDATE envios SET codigo = ?, origen = ?, destino = ?, estado = ?, cliente_id = ? WHERE id = ?',
+    [envio.codigo, envio.origen, envio.destino, envio.estado, envio.cliente_id, id]
+  );
+  return findById(id);
 }
 
 async function remove(id) {
-  const index = envios.findIndex((e) => e.id === id);
-  if (index === -1) return false;
-  envios.splice(index, 1);
-  return true;
+  await pool.query('DELETE FROM envios WHERE id = ?', [id]);
 }
 
-module.exports = { 
-  findAll, 
-  findById, 
-  findByCodigo, 
-  create, 
-  findByEstado, 
-  findByCliente, 
-  remove 
-};
+module.exports = { findAll, findById, findByCodigo, create, update, remove };

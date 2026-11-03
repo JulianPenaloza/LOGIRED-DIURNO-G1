@@ -7,8 +7,8 @@ const repo = require('../repositories/envios.repository');
 const { validarEnvio, construirEnvio } = require('../models/envio');
 const HttpError = require('../utils/http-error');
 
-async function listar() {
-  return repo.findAll();
+async function listar(filtros = {}) {
+  return repo.findAll(filtros);
 }
 
 async function obtener(id) {
@@ -23,8 +23,6 @@ async function crear(datos) {
 
   const envio = construirEnvio(datos);
 
-  // Regla de negocio: no puede haber dos envíos con el mismo código de guía
-  // 409 = Conflict.
   if (envio.codigo && await repo.findByCodigo(envio.codigo)) {
     throw new HttpError(409, `Ya existe un envío con el código de guía ${envio.codigo}`);
   }
@@ -32,28 +30,26 @@ async function crear(datos) {
   return repo.create(envio);
 }
 
-async function obtenerPorCodigo(codigo) {
-  return await repo.findByCodigo(codigo);
-}
+async function actualizar(id, datos) {
+  const errores = validarEnvio(datos);
+  if (errores.length > 0) throw new HttpError(400, 'Datos inválidos', errores);
 
-async function obtenerPorEstado(estado) {
-  return await repo.findByEstado(estado.toLowerCase());
-}
+  const existente = await repo.findById(id);
+  if (!existente) throw new HttpError(404, `No existe el envío con id ${id}`);
 
-async function obtenerPorCliente(cliente_id) {
-  return await repo.findByCliente(cliente_id);
+  const envio = construirEnvio(datos);
+
+  if (envio.codigo && envio.codigo !== existente.codigo && await repo.findByCodigo(envio.codigo)) {
+    throw new HttpError(409, `Ya existe un envío con el código de guía ${envio.codigo}`);
+  }
+
+  return repo.update(id, envio);
 }
 
 async function eliminar(id) {
-  return await repo.remove(id);
+  const existente = await repo.findById(id);
+  if (!existente) throw new HttpError(404, `No existe el envío con id ${id}`);
+  await repo.remove(id);
 }
 
-module.exports = { 
-  listar, 
-  obtener, 
-  crear, 
-  obtenerPorCodigo, 
-  obtenerPorEstado, 
-  obtenerPorCliente, 
-  eliminar 
-};
+module.exports = { listar, obtener, crear, actualizar, eliminar };
