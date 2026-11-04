@@ -33,4 +33,11 @@ async function create(cliente) {
   return nuevo;
 }
 
-module.exports = { findAll, findById, findByDocumento, create };
+async function update(id, datos) {
+  const indice = clientes.findIndex((c) => c.id === id);
+  if (indice === -1) return null;
+  clientes[indice] = { id, ...datos };
+  return clientes[indice];
+}
+
+module.exports = { findAll, findById, findByDocumento, create, update };

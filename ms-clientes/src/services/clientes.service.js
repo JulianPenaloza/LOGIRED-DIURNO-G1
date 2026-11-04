@@ -32,4 +32,24 @@ async function crear(datos) {
   return repo.create(cliente);
 }
 
-module.exports = { listar, obtener, crear };
+async function actualizar(id, datos) {
+  const errores = validarCliente(datos);
+  if (errores.length > 0) throw new HttpError(400, 'Datos inválidos', errores);
+
+  if (!(await repo.findById(id))) {
+    throw new HttpError(404, `No existe el cliente con id ${id}`);
+  }
+
+  const cliente = construirCliente(datos);
+
+  // Regla de negocio: el documento no puede pertenecer a OTRO cliente.
+  // Si es el del mismo cliente que se está editando, no hay conflicto.
+  const otro = await repo.findByDocumento(cliente.documento);
+  if (otro && otro.id !== id) {
+    throw new HttpError(409, `Ya existe un cliente con el documento ${cliente.documento}`);
+  }
+
+  return repo.update(id, cliente);
+}
+
+module.exports = { listar, obtener, crear, actualizar };
