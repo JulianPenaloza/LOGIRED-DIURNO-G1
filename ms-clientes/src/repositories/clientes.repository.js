@@ -40,4 +40,11 @@ async function update(id, datos) {
   return clientes[indice];
 }
 
-module.exports = { findAll, findById, findByDocumento, create, update };
+async function remove(id) {
+  const indice = clientes.findIndex((c) => c.id === id);
+  if (indice === -1) return false;
+  clientes.splice(indice, 1);
+  return true;
+}
+
+module.exports = { findAll, findById, findByDocumento, create, update, remove };

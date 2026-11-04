@@ -48,4 +48,10 @@ async function actualizar(req, res) {
   res.status(200).json(cliente);
 }
 
-module.exports = { listar, obtener, crear, actualizar };
+// DELETE /clientes/:id
+async function eliminar(req, res) {
+  await service.eliminar(leerId(req));
+  res.status(204).end();
+}
+
+module.exports = { listar, obtener, crear, actualizar, eliminar };
