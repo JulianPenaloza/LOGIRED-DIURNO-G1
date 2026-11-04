@@ -13,8 +13,19 @@ function leerId(req) {
 }
 
 // GET /clientes
+// GET /clientes, /clientes?ciudad=Cali, /clientes?ids=1,3,8
 async function listar(req, res) {
-  const clientes = await service.listar();
+  const filtros = { ciudad: req.query.ciudad };
+
+  if (req.query.ids !== undefined) {
+    const ids = String(req.query.ids).split(',').map((texto) => Number(texto.trim()));
+    if (ids.some((id) => !Number.isInteger(id) || id <= 0)) {
+      throw new HttpError(400, 'ids debe ser una lista de enteros positivos separados por comas');
+    }
+    filtros.ids = ids;
+  }
+
+  const clientes = await service.listar(filtros);
   res.status(200).json(clientes);
 }
 

@@ -13,8 +13,10 @@ const clientes = [
 ];
 let siguienteId = 4;
 
-async function findAll() {
-  return clientes;
+async function findAll(filtros = {}) {
+  return clientes.filter((c) =>
+    (!filtros.ciudad || c.ciudad === filtros.ciudad) &&
+    (!filtros.ids || filtros.ids.includes(c.id)));
 }
 
 async function findById(id) {
