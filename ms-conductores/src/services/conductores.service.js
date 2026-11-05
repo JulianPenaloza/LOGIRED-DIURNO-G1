@@ -43,14 +43,16 @@ async function actualizar(id, conductor) {
   };
   const datos= construirConductor(conductor);
 
-  const existente = await repo.findByCedula(id);
+  const existente = await repo.findByCedula(conductor.cedula);
 
   if (existente && existente.id !== id) {
     throw new HttpError(409, `Ya existe un conductor con la cédula ${datos.cedula}`);
   }
 
-  if (await repo.findByCelular(datos.celular) && existente.id !== id) {
-    throw new HttpError(409, `Ya existe un conductor con el celular ${datos.celular}`);
+  const existenteCelular = await repo.findByCelular(conductor.telefono);
+
+  if (existenteCelular && existenteCelular.id !== id) {
+    throw new HttpError(409, `Ya existe un conductor con el celular ${datos.telefono}`);
   }
 
   const actualizado = await repo.update(id, datos);
