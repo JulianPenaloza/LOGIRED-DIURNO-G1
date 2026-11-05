@@ -12,19 +12,19 @@ function leerId(req) {
   return id;
 }
 
-// GET /usuarios
+// GET /Conductores
 async function listar(req, res) {
-  const usuarios = await service.listar();
-  res.status(200).json(usuarios);
+  const conductores = await service.listar();
+  res.status(200).json(conductores);
 }
 
-// GET /usuarios/:id
+// GET /Conductores/:id
 async function obtener(req, res) {
-  const usuario = await service.obtener(leerId(req));
-  res.status(200).json(usuario);
+  const conductor = await service.obtener(leerId(req));
+  res.status(200).json(conductor);
 }
 
-// POST /usuarios
+// POST /Conductores
 async function crear(req, res) {
   const nuevo = await service.crear(req.body);
   res.status(201).location(`${req.baseUrl}/${nuevo.id}`).json(nuevo);
