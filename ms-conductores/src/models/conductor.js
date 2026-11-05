@@ -1,10 +1,6 @@
 // =====================================================================
 // CAPA DE MODELO (entidad)
 // Define qué campos tiene un conductor y qué reglas deben cumplir.
-// No sabe nada de HTTP ni de bases de datos.
-//
-// Versión del Taller 1: todavía sin contraseña. La contraseña cifrada
-// y el inicio de sesión se agregan en la versión completa (Taller 3).
 // =====================================================================
 
 const CEDULA_VALIDA = /^\d{10}$/;  // 10 dígitos
