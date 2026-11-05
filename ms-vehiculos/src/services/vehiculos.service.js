@@ -1,15 +1,18 @@
-
 const repo = require('../repositories/vehiculos.repository');
+
 const {
   validarVehiculo,
   construirVehiculo
 } = require('../models/vehiculo');
+
 const HttpError = require('../utils/http-error');
 
+// Listar todos los vehículos
 async function listar() {
-  return repo.findAll();
+  return await repo.findAll();
 }
 
+// Obtener un vehículo por ID
 async function obtener(id) {
   const vehiculo = await repo.findById(id);
 
@@ -20,6 +23,7 @@ async function obtener(id) {
   return vehiculo;
 }
 
+// Crear un vehículo
 async function crear(datos) {
   const errores = validarVehiculo(datos);
 
@@ -29,15 +33,31 @@ async function crear(datos) {
 
   const vehiculo = construirVehiculo(datos);
 
-  // La placa debe ser única.
-  if (await repo.findByPlaca(vehiculo.placa)) {
+  // Verificar que la placa no esté registrada
+  const existente = await repo.findByPlaca(vehiculo.placa);
+
+  if (existente) {
     throw new HttpError(
       409,
       `Ya existe un vehículo con la placa ${vehiculo.placa}`
     );
   }
 
-  return repo.create(vehiculo);
+  return await repo.create(vehiculo);
 }
 
-module.exports = { listar, obtener, crear };
+// Eliminar un vehículo
+async function eliminar(id) {
+  const vehiculo = await obtener(id);
+
+  await repo.remove(id);
+
+  return vehiculo;
+}
+
+module.exports = {
+  listar,
+  obtener,
+  crear,
+  eliminar
+};

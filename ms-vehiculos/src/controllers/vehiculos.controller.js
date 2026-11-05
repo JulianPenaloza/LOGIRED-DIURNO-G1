@@ -1,4 +1,3 @@
-
 const service = require('../services/vehiculos.service');
 const HttpError = require('../utils/http-error');
 
@@ -31,4 +30,18 @@ async function crear(req, res) {
   res.status(201).location(`${req.baseUrl}/${nuevo.id}`).json(nuevo);
 }
 
-module.exports = { listar, obtener, crear };
+// DELETE /vehiculos/:id
+async function eliminar(req, res) {
+  const eliminado = await service.eliminar(leerId(req));
+  res.status(200).json({
+    mensaje: 'Vehículo eliminado correctamente',
+    vehiculo: eliminado
+  });
+}
+
+module.exports = {
+  listar,
+  obtener,
+  crear,
+  eliminar
+};
