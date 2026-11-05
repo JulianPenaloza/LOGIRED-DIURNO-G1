@@ -1,24 +1,60 @@
-# ms-clientes · Taller 1 (Módulo 3)
+# ms-clientes · Microservicio de clientes de LogiRed
 
-Redes y Servicios Multimedia · UAO · Microservicio de **clientes** de LogiRed S.A.S.,
-con **Node.js + Express** organizado en capas. Gestiona los clientes de la empresa
-(personas o empresas que envían paquetes). Es la entidad de la que depende ms-envios
-mediante `cliente_id`.
+Microservicio de **clientes** de LogiRed S.A.S. (personas o empresas que envían paquetes),
+con **Node.js + Express** organizado en capas y datos en **MySQL**.
 
-Esta es la versión del Taller 1: datos en memoria y tres operaciones. En el Taller 2 se
-completa el CRUD REST y se conecta a MySQL; en el Taller 3 se despliega en servidor2.
+- **Entidad:** Cliente
+- **Responsable:** Jesús David Albarracín Ortega (`jesusalba15`)
+- **Puerto:** 3002
+- **Base de datos:** `clientes_db` (exclusiva de este microservicio)
+
+ms-envios consulta este servicio por REST para validar y mostrar los datos del cliente
+de cada envío (ver la sección Relaciones).
 
 ## Cómo ejecutarlo
 
-Requisitos: Node.js LTS 22 o superior (`node -v`).
+Requisitos: Node.js LTS 22 o superior (`node -v`) y MySQL Server 8.
+
+**1. Crear la base de datos y su usuario** (en Workbench o en la consola de MySQL, como `root`):
+
+```sql
+CREATE DATABASE clientes_db;
+CREATE USER 'clientes_user'@'localhost' IDENTIFIED BY 'ESCRIBA-SU-CLAVE';
+GRANT ALL PRIVILEGES ON clientes_db.* TO 'clientes_user'@'localhost';
+```
+
+**2. Crear la tabla y los 3 clientes iniciales.** Seleccione `clientes_db` y ejecute el
+contenido de `db/schema.sql`.
+
+**3. Instalar y configurar:**
 
 ```
-npm install                 # descarga Express en node_modules
+npm install                 # descarga las dependencias en node_modules
 copy .env.example .env      # en Windows (en Linux/Mac: cp .env.example .env)
+```
+
+Abra el `.env` y escriba la clave que eligió en el paso 1 (`DB_PASSWORD`).
+
+**4. Iniciar:**
+
+```
 npm run dev                 # inicia y se reinicia solo al guardar cambios
 ```
 
-Prueben en el navegador: http://localhost:3002/health y http://localhost:3002/clientes
+Debe aparecer `ms-clientes escuchando en http://127.0.0.1:3002`. Pruebe en el navegador:
+http://127.0.0.1:3002/health y http://127.0.0.1:3002/clientes
+
+### Variables del `.env`
+
+| Variable | Qué es | Valor de ejemplo |
+|---|---|---|
+| PORT | Puerto donde escucha el servicio | 3002 |
+| HOST | Dirección donde escucha (solo este equipo) | 127.0.0.1 |
+| DB_HOST | Equipo donde corre MySQL | localhost |
+| DB_PORT | Puerto de MySQL | 3306 |
+| DB_NAME | Base de datos de este microservicio | clientes_db |
+| DB_USER | Usuario de la base | clientes_user |
+| DB_PASSWORD | Clave del usuario (no se sube al repositorio) | |
 
 ## Capas
 
@@ -27,45 +63,141 @@ Prueben en el navegador: http://localhost:3002/health y http://localhost:3002/cl
 | src/index.js | Arranque | Lee PORT y HOST y pone el servidor a escuchar |
 | src/app.js | Configuración | Middlewares, /health, montaje de rutas, manejo de errores |
 | src/routes/clientes.routes.js | Presentación | Método HTTP + URI → función del controlador |
-| src/controllers/clientes.controller.js | Presentación | Lee la petición, llama al servicio, arma la respuesta |
+| src/controllers/clientes.controller.js | Presentación | Lee la petición (id, filtros, cuerpo), llama al servicio, arma la respuesta |
 | src/services/clientes.service.js | Lógica de negocio | Validaciones y reglas (documento único); no conoce HTTP ni la base de datos |
-| src/repositories/clientes.repository.js | Acceso a datos | Guarda y consulta (en memoria en el Taller 1) |
 | src/models/clientes.js | Modelo | Atributos de la entidad y su validación |
+| src/repositories/clientes.repository.js | Acceso a datos | Consultas SQL parametrizadas a `clientes_db` |
+| src/db.js | Acceso a datos | Pool de conexiones a MySQL con los datos del `.env` |
+| db/schema.sql | Base de datos | Tabla `clientes` y 3 clientes iniciales |
 | src/utils/http-error.js | Utilidad | Error con código de estado HTTP |
 
-## Atributos (contrato)
+## Representación de un cliente
+
+Así responde `GET /clientes/1`. Es la forma de cada cliente en todas las respuestas:
+
+```json
+{
+  "id": 1,
+  "nombre": "Distribuidora El Valle",
+  "documento": "900123456",
+  "telefono": "3001112233",
+  "email": "contacto@elvalle.com",
+  "ciudad": "Cali"
+}
+```
+
+## Atributos
 
 | Atributo | Tipo | Obligatorio al crear | Reglas |
 |---|---|---|---|
-| id | entero | No (lo asigna el servicio) | Positivo y único |
-| nombre | texto | Sí | No vacío |
+| id | entero | No (lo asigna la base de datos) | Positivo y único; el cliente nunca lo envía |
+| nombre | texto | Sí | No vacío; se guarda sin espacios al inicio ni al final |
 | documento | texto | Sí | De 6 a 15 dígitos; único (si se repite: 409) |
 | telefono | texto | Sí | De 7 a 10 dígitos |
 | email | texto | Sí | Formato de correo válido; se guarda en minúsculas |
 | ciudad | texto | Sí | No vacía |
 
-## Endpoints (Taller 1)
+`documento` y `telefono` son texto (van entre comillas en el JSON) para no perder ceros
+iniciales. Los campos que no estén en la tabla se descartan.
 
-| Método | URI | Respuesta |
-|---|---|---|
-| GET | /health | 200 `{"servicio":"ms-clientes","estado":"ok"}` |
-| GET | /clientes | 200 arreglo de clientes |
-| GET | /clientes/:id | 200 cliente · 400 id inválido · 404 no existe |
-| POST | /clientes | 201 cliente creado · 400 datos inválidos · 409 documento repetido |
+## Endpoints
 
-Ejemplo de cuerpo para POST (`documento` y `telefono` van como texto, entre comillas):
+| Operación | Método | URI | Cuerpo | Respuesta exitosa | Errores posibles |
+|---|---|---|---|---|---|
+| Salud | GET | /health | — | 200 `{"servicio":"ms-clientes","estado":"ok"}` | — |
+| Listar | GET | /clientes | — | 200 + arreglo | — |
+| Filtrar | GET | /clientes?ciudad=Cali | — | 200 + arreglo filtrado | — |
+| Consultar por lotes | GET | /clientes?ids=1,3,8 | — | 200 + arreglo con esos registros | 400 ids inválidos |
+| Obtener | GET | /clientes/:id | — | 200 + objeto | 400 id inválido · 404 |
+| Crear | POST | /clientes | JSON sin id | 201 + objeto + cabecera Location | 400 · 409 |
+| Actualizar | PUT | /clientes/:id | JSON completo sin id | 200 + objeto actualizado | 400 · 404 · 409 |
+| Eliminar | DELETE | /clientes/:id | — | 204 sin cuerpo | 400 · 404 |
+
+Notas sobre los filtros:
+
+- `ids` es una lista de enteros positivos separados por comas. Un id que no existe no es
+  error: simplemente no aparece en el arreglo. Si algún valor no es un entero positivo
+  (por ejemplo `?ids=abc` o `?ids=`), responde 400.
+- `ciudad` filtra por la ciudad indicada. Se pueden combinar `ciudad` e `ids`.
+
+### Ejemplo: crear un cliente
+
+`POST /clientes` con `Content-Type: application/json`:
 
 ```json
 {
   "nombre": "Transportes Pacífico",
-  "documento": "900456789",
+  "documento": "900456783",
   "telefono": "3004445566",
   "email": "info@pacifico.com",
   "ciudad": "Buenaventura"
 }
 ```
 
+Respuesta `201 Created`, con la cabecera `Location: /clientes/6`:
+
+```json
+{
+  "id": 6,
+  "nombre": "Transportes Pacífico",
+  "documento": "900456783",
+  "telefono": "3004445566",
+  "email": "info@pacifico.com",
+  "ciudad": "Buenaventura"
+}
+```
+
+### Ejemplo: listar clientes
+
+`GET /clientes?ids=1,3` responde `200 OK`:
+
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Distribuidora El Valle",
+    "documento": "900123456",
+    "telefono": "3001112233",
+    "email": "contacto@elvalle.com",
+    "ciudad": "Cali"
+  },
+  {
+    "id": 3,
+    "nombre": "Tienda La Esquina",
+    "documento": "900345678",
+    "telefono": "3003334455",
+    "email": "info@laesquina.com",
+    "ciudad": "Medellín"
+  }
+]
+```
+
+### Formato de los errores
+
+Todos los errores tienen el mismo formato (la lista `detalles` aparece solo en los errores
+de validación):
+
+```json
+{
+  "error": "Datos inválidos",
+  "detalles": ["nombre es obligatorio"]
+}
+```
+
+| Código | Cuándo |
+|---|---|
+| 400 | Datos inválidos, id inválido o lista `ids` inválida |
+| 404 | El cliente no existe |
+| 409 | El documento ya pertenece a otro cliente |
+
 ## Relaciones
 
-ms-clientes no guarda referencias a otros microservicios. ms-envios lo consultará por REST
-(`GET /clientes/:id` y `GET /clientes?ids=...`); el filtro `?ids=` se agrega más adelante.
+ms-clientes **no guarda referencias** a otros microservicios. Es un servicio consultado:
+ms-envios guarda el `cliente_id` de cada envío y le pide a este servicio los datos del cliente.
+
+| Me consulta | Peticiones que me hace | Campos que no puedo cambiar sin avisar |
+|---|---|---|
+| ms-envios | `GET /clientes/:id` (al crear o actualizar un envío, solo usa el código 200 o 404) · `GET /clientes?ids=…` (al consultar envíos) | id, nombre, ciudad |
+
+Cualquier cambio en el nombre de estos campos o en estas URIs rompe ms-envios, por eso se
+avisa al grupo antes de hacerlo.
