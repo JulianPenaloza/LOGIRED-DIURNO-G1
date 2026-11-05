@@ -33,6 +33,10 @@ async function findByCedula(cedula) {
   return conductores.find((c) => c.cedula === cedula) || null;
 }
 
+async function findByCelular(celular) {
+  return conductores.find((c) => c.telefono === celular) || null;
+}
+
 async function create(conductor) {
   const nuevo = { id: siguienteId++, ...conductor };
   conductores.push(nuevo);

@@ -23,10 +23,14 @@ async function crear(datos) {
 
   const conductor = construirConductor(datos);
 
-  // Regla de negocio: no puede haber dos conductores con la misma cédula
-  // (la cédula es con lo que se inicia sesión). 409 = Conflict.
+  // Regla de negocio: no puede haber dos conductores con la misma cédula ni con el mismo celular
+  //  409 = Conflict.
   if (await repo.findByCedula(conductor.cedula)) {
     throw new HttpError(409, `Ya existe un conductor con la cédula ${conductor.cedula}`);
+  }
+
+  if (await repo.findByCelular(conductor.celular)) {
+    throw new HttpError(409, `Ya existe un conductor con el celular ${conductor.celular}`);
   }
 
   return repo.create(conductor);
@@ -38,6 +42,16 @@ async function actualizar(id, conductor) {
     throw new HttpError(400, errores.join(', '));
   };
   const datos= construirConductor(conductor);
+
+  const existente = await repo.findByCedula(id);
+
+  if (existente && existente.id !== id) {
+    throw new HttpError(409, `Ya existe un conductor con la cédula ${datos.cedula}`);
+  }
+
+  if (await repo.findByCelular(datos.celular) && existente.id !== id) {
+    throw new HttpError(409, `Ya existe un conductor con el celular ${datos.celular}`);
+  }
 
   const actualizado = await repo.update(id, datos);
   if (!actualizado) {
