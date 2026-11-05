@@ -1,6 +1,6 @@
 {
   "name": "ms-conductores",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Microservicio de conductores - Redes y Servicios Multimedia, Módulo 3",
   "main": "src/index.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "dev": "node --watch --env-file-if-exists=.env src/index.js"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mysql2": "^3.24.6"
   }
 }

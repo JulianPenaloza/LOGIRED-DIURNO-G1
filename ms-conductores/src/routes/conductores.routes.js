@@ -11,6 +11,8 @@ router.get('/', controller.listar);      // listar todos los conductores
 router.get('/:id', controller.obtener);  // obtener un conductor por id
 router.post('/', controller.crear);      // crear un conductor
 
-// Taller 2: agregar PUT /:id (actualizar) y DELETE /:id (eliminar)
+router.put('/:id', controller.actualizar); // actualizar un conductor por id
+router.delete('/:id', controller.eliminar); // eliminar un conductor por id
+
 
 module.exports = router;
