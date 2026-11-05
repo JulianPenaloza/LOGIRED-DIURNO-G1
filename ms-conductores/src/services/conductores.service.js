@@ -7,8 +7,8 @@ const repo = require('../repositories/conductores.repository');
 const { validarConductor, construirConductor } = require('../models/conductor');
 const HttpError = require('../utils/http-error');
 
-async function listar() {
-  return repo.findAll();
+async function listar(filtros) {
+  return repo.findAll(filtros);
 }
 
 async function obtener(id) {
@@ -32,4 +32,25 @@ async function crear(datos) {
   return repo.create(conductor);
 }
 
-module.exports = { listar, obtener, crear };
+async function actualizar(id, conductor) {
+  const errores = validarConductor(conductor);
+  if (errores.length > 0) {
+    throw new HttpError(400, errores.join(', '));
+  };
+  const datos= construirConductor(conductor);
+
+  const actualizado = await repo.update(id, datos);
+  if (!actualizado) {
+    throw new HttpError(404, `No existe un conductor con id ${id}`);
+  };
+  return actualizado;
+}
+
+async function eliminar(id) {
+  const eliminado = await repo.remove(id);
+  if (!eliminado) {
+    throw new HttpError(404, `No existe un conductor con id ${id}`);
+  }
+}
+
+module.exports = { listar, obtener, crear, actualizar, eliminar };
