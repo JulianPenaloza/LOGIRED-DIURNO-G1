@@ -29,8 +29,8 @@ async function crear(datos) {
     throw new HttpError(409, `Ya existe un conductor con la cédula ${conductor.cedula}`);
   }
 
-  if (await repo.findByCelular(conductor.celular)) {
-    throw new HttpError(409, `Ya existe un conductor con el celular ${conductor.celular}`);
+  if (await repo.findByCelular(conductor.telefono)) {
+    throw new HttpError(409, `Ya existe un conductor con el celular ${conductor.telefono}`);
   }
 
   return repo.create(conductor);

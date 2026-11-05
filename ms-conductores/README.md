@@ -43,4 +43,3 @@ Prueben en el navegador: http://localhost:3004/health y http://localhost:3004/co
 Ejemplo de cuerpo para POST:
 ` { "nombre": "Andrés Castillo", "cedula": "1110365999", "categoria_licencia": "c2", "telefono": "3004567890", "sede": "bogota" }`
 
-Los roles válidos se configuran en el archivo .env (`ROLES=administrador,despacho,flota`).

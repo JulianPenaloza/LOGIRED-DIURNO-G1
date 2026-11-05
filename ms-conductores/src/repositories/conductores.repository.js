@@ -7,58 +7,85 @@
 // a una base de datos real no obligue a modificar la capa de servicio.
 
 const HttpError = require("../utils/http-error");
-
+const pool = require("../db");
 // =====================================================================
-const conductores = [
-  { id: 1, nombre: 'Carlos Rodríguez', cedula: '1110365790', categoria_licencia: 'c2', telefono: '3001234567', sede: 'cali' },
-  { id: 2, nombre: 'Laura Gómez', cedula: '1110365791', categoria_licencia: 'c3', telefono: '3009876543', sede: 'medellin' },
-  { id: 3, nombre: 'Andrés Castillo', cedula: '1110365792', categoria_licencia: 'c2', telefono: '3004567890', sede: 'bogota' },
-];
-let siguienteId = 4;
+function aConductor(row) {
+  return {
+    id: row.id,
+    nombre: row.nombre,
+    cedula: row.cedula,
+    categoria_licencia: row.categoria_licencia,
+    telefono: row.telefono,
+    sede: row.sede
+  };
+}
+
 
 async function findAll(filtros = {}) {
-  return conductores.filter((c) => {
-    if (filtros.ids && !filtros.ids.includes(c.id)) return false;
-    if (filtros.categoria_licencia && c.categoria_licencia !== filtros.categoria_licencia) return false;
-    if (filtros.sede && c.sede !== filtros.sede) return false;
-    return true;
-  });
+  let sql = 'SELECT * FROM conductores';
+  const condiciones = [];
+  const valores = [];
+  if (filtros.ids) {
+    condiciones.push('id IN (?)');
+    valores.push(filtros.ids);
+  }
+  if (filtros.categoria_licencia) {
+    condiciones.push('categoria_licencia = ?');
+    valores.push(filtros.categoria_licencia);
+  }
+  if (filtros.sede) {
+    condiciones.push('sede = ?');
+    valores.push(filtros.sede);
+  }
+
+  if (condiciones.length > 0) {
+    sql += ' WHERE ' + condiciones.join(' AND ');
+  }
+
+  const [rows] = await pool.query(sql + ' ORDER BY id', valores);
+  return rows.map(aConductor);
 }
 
 async function findById(id) {
-  return conductores.find((c) => c.id === id) || null;
+  let sql = 'SELECT * FROM conductores WHERE id = ?';
+  const [rows] = await pool.query(sql, [id]);
+  return rows.length > 0 ? aConductor(rows[0]) : null;
 }
 
 async function findByCedula(cedula) {
-  return conductores.find((c) => c.cedula === cedula) || null;
+  let sql = 'SELECT * FROM conductores WHERE cedula = ?';
+  const [rows] = await pool.query(sql, [cedula]);
+  return rows.length > 0 ? aConductor(rows[0]) : null;
 }
 
+
 async function findByCelular(celular) {
-  return conductores.find((c) => c.telefono === celular) || null;
+  let sql = 'SELECT * FROM conductores WHERE telefono = ?';
+  const [rows] = await pool.query(sql, [celular]);
+  return rows.length > 0 ? aConductor(rows[0]) : null;
 }
 
 async function create(conductor) {
-  const nuevo = { id: siguienteId++, ...conductor };
-  conductores.push(nuevo);
-  return nuevo;
+  let sql = 'INSERT INTO conductores (nombre, cedula, categoria_licencia, telefono, sede) VALUES (?, ?, ?, ?, ?)';
+  const [result] = await pool.query(sql, [conductor.nombre, conductor.cedula, conductor.categoria_licencia, conductor.telefono, conductor.sede]);
+  return { id: result.insertId, ...conductor };
 }
 
+
 async function update(id, conductor) {
-  const index = conductores.findIndex((c) => c.id === id);
-  if (index === -1) {
+  let sql = 'UPDATE conductores SET nombre = ?, cedula = ?, categoria_licencia = ?, telefono = ?, sede = ? WHERE id = ?';
+  const [result] = await pool.query(sql, [conductor.nombre, conductor.cedula, conductor.categoria_licencia, conductor.telefono, conductor.sede, id]);
+  if (result.affectedRows === 0) {
     return null; // No se encontró el conductor con el id proporcionado
-  };
-  conductores[index] = { id, ...conductor };
-  return conductores[index];
+  }
+  return findById(id); // Devuelve el conductor actualizado
 }
 
 async function remove(id) {
-  const index = conductores.findIndex((c) => c.id === id);
-  if (index === -1) {
+  let sql = 'DELETE FROM conductores WHERE id = ?';
+  const [result] = await pool.query(sql, [id]);
+  return result.affectedRows > 0;
     return false; // No se encontró el conductor con el id proporcionado
   }
-  conductores.splice(index, 1);
-  return true;
-}
 
-module.exports = { findAll, findById, findByCedula, create, update, remove };
+module.exports = { findAll, findById, findByCedula, findByCelular, create, update, remove };
