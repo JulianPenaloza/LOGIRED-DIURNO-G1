@@ -30,6 +30,12 @@ async function crear(req, res) {
   res.status(201).location(`${req.baseUrl}/${nuevo.id}`).json(nuevo);
 }
 
+// PUT /vehiculos/:id
+async function actualizar(req, res) {
+  const actualizado = await service.actualizar(leerId(req), req.body);
+  res.status(200).json(actualizado);
+}
+
 // DELETE /vehiculos/:id
 async function eliminar(req, res) {
   const eliminado = await service.eliminar(leerId(req));
@@ -43,5 +49,6 @@ module.exports = {
   listar,
   obtener,
   crear,
+  actualizar,
   eliminar
 };

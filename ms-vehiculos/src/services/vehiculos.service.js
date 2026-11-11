@@ -7,6 +7,17 @@ const {
 
 const HttpError = require('../utils/http-error');
 
+function manejarErrorPlacaDuplicada(error, placa) {
+  if (error && error.code === 'ER_DUP_ENTRY') {
+    throw new HttpError(
+      409,
+      `Ya existe un vehículo con la placa ${placa}`
+    );
+  }
+
+  throw error;
+}
+
 // Listar todos los vehículos
 async function listar() {
   return await repo.findAll();
@@ -43,7 +54,50 @@ async function crear(datos) {
     );
   }
 
-  return await repo.create(vehiculo);
+  try {
+    return await repo.create(vehiculo);
+  } catch (error) {
+    manejarErrorPlacaDuplicada(error, vehiculo.placa);
+  }
+}
+
+// Actualizar un vehículo existente
+async function actualizar(id, datos) {
+  const existente = await repo.findById(id);
+
+  if (!existente) {
+    throw new HttpError(404, `No existe el vehículo con id ${id}`);
+  }
+
+  const errores = validarVehiculo(datos);
+
+  if (errores.length > 0) {
+    throw new HttpError(400, 'Datos inválidos', errores);
+  }
+
+  const vehiculo = construirVehiculo(datos);
+  const vehiculoConPlaca = await repo.findByPlaca(vehiculo.placa);
+
+  if (vehiculoConPlaca && Number(vehiculoConPlaca.id) !== id) {
+    throw new HttpError(
+      409,
+      `Ya existe un vehículo con la placa ${vehiculo.placa}`
+    );
+  }
+
+  let actualizado;
+
+  try {
+    actualizado = await repo.update(id, vehiculo);
+  } catch (error) {
+    manejarErrorPlacaDuplicada(error, vehiculo.placa);
+  }
+
+  if (!actualizado) {
+    throw new HttpError(404, `No existe el vehículo con id ${id}`);
+  }
+
+  return actualizado;
 }
 
 // Eliminar un vehículo
@@ -59,5 +113,6 @@ module.exports = {
   listar,
   obtener,
   crear,
+  actualizar,
   eliminar
 };

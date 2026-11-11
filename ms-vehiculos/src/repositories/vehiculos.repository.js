@@ -49,6 +49,26 @@ async function create(vehiculo) {
   return findById(result.insertId);
 }
 
+// Actualizar todos los campos permitidos de un vehículo
+async function update(id, vehiculo) {
+  const {
+    placa,
+    tipo,
+    capacidad_kg,
+    estado,
+    conductor_id
+  } = vehiculo;
+
+  await pool.query(
+    `UPDATE vehiculos
+    SET placa = ?, tipo = ?, capacidad_kg = ?, estado = ?, conductor_id = ?
+    WHERE id = ?`,
+    [placa, tipo, capacidad_kg, estado, conductor_id ?? null, id]
+  );
+
+  return findById(id);
+}
+
 // Eliminar un vehículo por su ID
 async function remove(id) {
   const [result] = await pool.query(
@@ -64,5 +84,6 @@ module.exports = {
   findById,
   findByPlaca,
   create,
+  update,
   remove
 };
