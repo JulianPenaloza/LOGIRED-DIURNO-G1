@@ -1,4 +1,4 @@
--- db/schema.sql — base de datos de ms-usuarios
+USE usuarios_db;
 SET NAMES utf8mb4;            -- para que las tildes y la ñ se guarden bien
 
 CREATE TABLE usuarios (
