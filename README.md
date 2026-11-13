@@ -19,3 +19,13 @@ Jornada: Diurno - Grupo 1
 * `ms-envios/`: Gestión y seguimiento de envíos (guías, origen, destino y estado).
 * `ms-conductores/`: Gestión del personal de conducción.
 * `ms-vehiculos/`: Gestión de la flota de transporte.
+
+## Relaciones
+
+`ms-envios` guarda la referencia de los clientes (`cliente_id`) y se comunica de forma síncrona con `ms-clientes` para validar su existencia y componer los datos en las consultas.
+
+| Atributo | Microservicio consultado | Para validar (al crear y actualizar) | Para componer (al consultar) | Datos que usa |
+| :--- | :--- | :--- | :--- | :--- |
+| `cliente_id` | `ms-clientes` | `GET /clientes/:id` | `GET /clientes?ids=...` | id, nombre, ciudad |
+
+`ms-envios` reenvía el token JWT recibido del usuario en cada petición hacia `ms-clientes` para cumplir con los requisitos de seguridad de ambos servicios.
