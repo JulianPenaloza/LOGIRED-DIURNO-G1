@@ -20,7 +20,7 @@ Requisitos: Node.js LTS 22 o superior (`node -v`) y MySQL Server 8.
 
 ```sql
 CREATE DATABASE clientes_db;
-CREATE USER 'clientes_user'@'localhost' IDENTIFIED BY 'clave';
+CREATE USER 'clientes_user'@'localhost' IDENTIFIED BY 'una_clave_segura'
 GRANT ALL PRIVILEGES ON clientes_db.* TO 'clientes_user'@'localhost';
 ```
 
