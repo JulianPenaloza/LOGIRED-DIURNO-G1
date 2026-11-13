@@ -1,0 +1,590 @@
+{
+    "info": {
+        "_postman_id": "66606cc2-0098-4cc9-967d-bdbd1ab7a2ea",
+        "name": "ms-conductores",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Listar todos",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlIjoiQWRtaW5pc3RyYWRvciBHZW5lcmFsIiwicm9sIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc5NDU4OTEzNSwiZXhwIjoxNzk0NjE3OTM1fQ.AERRfXx7ttZhTKgo78C7wICs6KCzF3vr2r6VJYFVesA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Filtro por sede",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores?sede=cali",
+                    "query": [
+                        {
+                            "key": "sede",
+                            "value": "cali"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlIjoiQWRtaW5pc3RyYWRvciBHZW5lcmFsIiwicm9sIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc5NDU4OTEzNSwiZXhwIjoxNzk0NjE3OTM1fQ.AERRfXx7ttZhTKgo78C7wICs6KCzF3vr2r6VJYFVesA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Filtro por licencia",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores?categoria_licencia=c2",
+                    "query": [
+                        {
+                            "key": "categoria_licencia",
+                            "value": "c2"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlIjoiQWRtaW5pc3RyYWRvciBHZW5lcmFsIiwicm9sIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc5NDU4OTEzNSwiZXhwIjoxNzk0NjE3OTM1fQ.AERRfXx7ttZhTKgo78C7wICs6KCzF3vr2r6VJYFVesA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Consultar por lotes con ?ids=",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores?ids=1,3",
+                    "query": [
+                        {
+                            "key": "ids",
+                            "value": "1,3"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlIjoiQWRtaW5pc3RyYWRvciBHZW5lcmFsIiwicm9sIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc5NDU4OTEzNSwiZXhwIjoxNzk0NjE3OTM1fQ.AERRfXx7ttZhTKgo78C7wICs6KCzF3vr2r6VJYFVesA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "obtener un registro existente",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/1",
+                    "path": [
+                        "conductores",
+                        "1"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                }
+            }
+        },
+        {
+            "name": "obtener un registro que no existe",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/9",
+                    "path": [
+                        "conductores",
+                        "9"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                }
+            }
+        },
+        {
+            "name": "obtener registro con id no numerico",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/a",
+                    "path": [
+                        "conductores",
+                        "a"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                }
+            }
+        },
+        {
+            "name": " Crear con datos válidos ",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"nombre\": \"Gabriel Garcia Marquez\",\n  \"cedula\": \"1110365780\",\n  \"categoria_licencia\": \"c3\",\n  \"telefono\": \"3135487820\",\n  \"sede\": \"cali\"\n}"
+                }
+            }
+        },
+        {
+            "name": "crear sin atributo obligatorio",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\r\n  \"nombre\": \"\",\r\n  \"cedula\": \"\",\r\n  \"categoria_licencia\": \"\",\r\n  \"telefono\": \"\",\r\n  \"sede\": \"\"\r\n}"
+                }
+            }
+        },
+        {
+            "name": "crear violando regla de cedula",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"nombre\": \"Andrés Castillo\",\n  \"cedula\": \"1110365722\",\n  \"categoria_licencia\": \"c2\",\n  \"telefono\": \"3004567890\",\n  \"sede\": \"bogota\"\n}"
+                }
+            }
+        },
+        {
+            "name": "crear violando regla de telefono",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"nombre\": \"Andrés Castillo\",\n  \"cedula\": \"1234562332\",\n  \"categoria_licencia\": \"c2\",\n  \"telefono\": \"3004567890\",\n  \"sede\": \"bogota\"\n}"
+                }
+            }
+        },
+        {
+            "name": "actualizar registro",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/1",
+                    "path": [
+                        "conductores",
+                        "1"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": " { \"nombre\": \"María selana\",\n    \"cedula\": \"1110365780\",\n    \"categoria_licencia\": \"c3\",\n    \"telefono\": \"554587555\",\n    \"sede\": \"cali\"}"
+                }
+            }
+        },
+        {
+            "name": "actualizar id inexistente",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/144",
+                    "path": [
+                        "conductores",
+                        "144"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "  {\"nombre\": \"María\",\n    \"cedula\": \"0987654321\",\n    \"categoria_licencia\": \"c3\",\n    \"telefono\": \"555987654\",\n    \"sede\": \"medellin\"}"
+                }
+            }
+        },
+        {
+            "name": "borrar registro",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/11",
+                    "path": [
+                        "conductores",
+                        "11"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                }
+            }
+        },
+        {
+            "name": "borrar registro ya eliminado",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/11",
+                    "path": [
+                        "conductores",
+                        "11"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                }
+            }
+        },
+        {
+            "name": "Peticion sin token",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                }
+            }
+        },
+        {
+            "name": "token inventado",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "ads21312sdad",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "get con token de despacho",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlIjoiTGF1cmEgTWFydGluZXoiLCJyb2wiOiJkZXNwYWNobyIsImlhdCI6MTc5NDU4OTMzMSwiZXhwIjoxNzk0NjE4MTMxfQ.-SkH4XKsAHPdLASvnTeGvIEr8jZem8fq_VijdxkVqfs",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "post con rol sin permiso",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"nombre\": \"Andrés Castillo\",\n  \"cedula\": \"1110365999\",\n  \"categoria_licencia\": \"c2\",\n  \"telefono\": \"3004567890\",\n  \"sede\": \"bogota\"\n}"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibm9tYnJlIjoiTGF1cmEgTWFydGluZXoiLCJyb2wiOiJkZXNwYWNobyIsImlhdCI6MTc5NDU4OTMzMSwiZXhwIjoxNzk0NjE4MTMxfQ.-SkH4XKsAHPdLASvnTeGvIEr8jZem8fq_VijdxkVqfs",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "post con rol con permiso",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:3004/conductores/",
+                    "path": [
+                        "conductores"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "3004"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"nombre\": \"Andrés Castillo\",\n  \"cedula\": \"1110365999\",\n  \"categoria_licencia\": \"c2\",\n  \"telefono\": \"3004567820\",\n  \"sede\": \"bogota\"\n}"
+                },
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlIjoiQWRtaW5pc3RyYWRvciBHZW5lcmFsIiwicm9sIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc5NDU4OTEzNSwiZXhwIjoxNzk0NjE3OTM1fQ.AERRfXx7ttZhTKgo78C7wICs6KCzF3vr2r6VJYFVesA",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
