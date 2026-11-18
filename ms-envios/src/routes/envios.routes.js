@@ -5,6 +5,9 @@ const { verificarToken, requiereRol } = require('../middlewares/auth');
 
 const router = Router();
 
+// RUTA PÚBLICA: Rastreo por código de guía (NO requiere token)
+router.get('/rastreo/:codigo', controller.rastrear);
+
 // 2. Exigir token válido para TODAS las rutas de aquí hacia abajo
 router.use(verificarToken);
 

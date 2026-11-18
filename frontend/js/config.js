@@ -1,15 +1,14 @@
 // =====================================================================
 // CONFIGURACIÓN DEL FRONTEND
-// Dirección de ms-usuarios. En el Taller 3, detrás del gateway, pasa a ser
-// '/api' (misma dirección que el frontend) y CORS deja de hacer falta.
+// Detrás del gateway de Apache, la API vive en '/api' (mismo origen).
 // =====================================================================
-const API_USUARIOS = 'http://localhost:3001';
+const API_USUARIOS = '/api';
 
 // Página de inicio de cada rol (a dónde lleva el login)
 const PAGINA_POR_ROL = {
-  administrador: 'usuarios.html',
-  bibliotecario: 'perfil.html',
-  lector: 'perfil.html',
+  administrador: '/admin.html',
+  despacho: '/despacho.html',
+  flota: '/flota.html',
 };
 
-const ROLES = ['administrador', 'bibliotecario', 'lector'];
+const ROLES = ['administrador', 'despacho', 'flota'];

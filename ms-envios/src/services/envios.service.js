@@ -22,6 +22,18 @@ async function componer(envios, token) {
   return envios.map((e) => ({ ...e, cliente: clientes.get(e.cliente_id) || null }));
 }
 
+// RUTA PÚBLICA: Rastreo por código sin exponer datos del cliente
+async function rastrear(codigo) {
+  const envio = await repo.findByCodigo(codigo);
+  if (!envio) throw new HttpError(404, `No existe un envío con el código ${codigo}`);
+  return {
+    codigo: envio.codigo,
+    origen: envio.origen,
+    destino: envio.destino,
+    estado: envio.estado
+  };
+}
+
 // 3. FUNCIONES DEL CRUD MODIFICADAS (ahora reciben 'token')
 async function listar(filtros = {}, token) {
   // Componer la lista entera
@@ -91,4 +103,4 @@ async function eliminar(id) {
   await repo.remove(id);
 }
 
-module.exports = { listar, obtener, crear, actualizar, eliminar };
+module.exports = { rastrear, listar, obtener, crear, actualizar, eliminar };

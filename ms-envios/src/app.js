@@ -6,6 +6,9 @@ const express = require('express');
 const enviosRoutes = require('./routes/envios.routes');
 
 const app = express();
+const cors = require('cors');
+// ...
+app.use(cors());
 
 // Middleware: convierte el cuerpo JSON de la petición en un objeto (req.body)
 app.use(express.json());
