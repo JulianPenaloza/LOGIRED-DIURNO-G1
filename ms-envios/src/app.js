@@ -3,15 +3,21 @@
 // Aquí se registran los middlewares, las rutas y el manejo de errores.
 // =====================================================================
 const express = require('express');
+const cors = require('cors');
 const enviosRoutes = require('./routes/envios.routes');
 
 const app = express();
-const cors = require('cors');
-// ...
+
 app.use(cors());
 
 // Middleware: convierte el cuerpo JSON de la petición en un objeto (req.body)
 app.use(express.json());
+
+// Middleware: registra en consola cada petición entrante
+app.use((req, res, next) => {
+  console.log(`${new Date().toLocaleTimeString()} ${req.method} ${req.originalUrl}`);
+  next();
+});
 
 // Endpoint de salud: permite verificar que el microservicio está vivo
 app.get('/health', (req, res) => {
