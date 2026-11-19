@@ -59,7 +59,7 @@ const MODULOS = {
     permisos: { administrador: TODO, despacho: ['consultar'], flota: ['consultar', 'editar'] },
   },
   vehiculos: {
-    nombre: 'Vehículos', pagina: null,
+    nombre: 'Vehículos', pagina:'vehiculos.html',
     descripcion: 'Flota y conductor asignado (ms-vehiculos)',
     permisos: { administrador: TODO, despacho: ['consultar'], flota: TODO },
   },
