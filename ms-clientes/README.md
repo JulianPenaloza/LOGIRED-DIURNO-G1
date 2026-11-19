@@ -20,8 +20,9 @@ Requisitos: Node.js LTS 22 o superior (`node -v`) y MySQL Server 8.
 
 ```sql
 CREATE DATABASE clientes_db;
-CREATE USER 'clientes_user'@'localhost' IDENTIFIED BY 'una_clave_segura'
+CREATE USER 'clientes_user'@'localhost' IDENTIFIED BY 'ESCRIBA-SU-CLAVE';
 GRANT ALL PRIVILEGES ON clientes_db.* TO 'clientes_user'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
 **2. Crear la tabla y los 3 clientes iniciales.** Seleccione `clientes_db` y ejecute el
@@ -53,12 +54,27 @@ http://127.0.0.1:3002/health (público). Para consultar `/clientes` necesita un 
 |---|---|---|
 | PORT | Puerto donde escucha el servicio | 3002 |
 | HOST | Dirección donde escucha (solo este equipo) | 127.0.0.1 |
-| DB_HOST | Equipo donde corre MySQL | localhost |
+| DB_HOST | Equipo donde corre MySQL | localhost (PC) · 172.24.0.134 (servidor1) |
 | DB_PORT | Puerto de MySQL | 3306 |
 | DB_NAME | Base de datos de este microservicio | clientes_db |
 | DB_USER | Usuario de la base | clientes_user |
 | DB_PASSWORD | Clave del usuario (no se sube al repositorio) | |
 | JWT_SECRET | Clave con la que se verifican los tokens. Debe ser la misma en todos los microservicios del grupo y en ms-usuarios (no se sube al repositorio) | |
+
+## Despliegue en servidores (Taller 3)
+
+En el despliegue de LogiRed, MySQL corre en **servidor1** (172.24.0.134) y el microservicio en
+**servidor2** (172.24.0.132) como servicio systemd, detrás del gateway Apache
+(`http://app.logired.com.co/api/clientes`). Los archivos están en `deploy/`:
+
+| Archivo | Qué hace |
+|---|---|
+| `deploy/crear-bd-clientes.sql` | Crea `clientes_db` y `clientes_user` (solo accesible desde servidor2) |
+| `deploy/ms-clientes.service` | Servicio systemd que arranca el microservicio con su `.env` |
+| `deploy/app.conf` | Sitio Apache (gateway) con las rutas `/api/...` |
+
+En servidor2 el `.env` usa `DB_HOST=172.24.0.134` y la misma `JWT_SECRET` de ms-usuarios.
+El `.env` real nunca se sube al repositorio.
 
 ## Capas
 
