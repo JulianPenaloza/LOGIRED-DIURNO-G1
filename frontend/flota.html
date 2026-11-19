@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LogiRed · Panel de flota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body data-rol="flota">
+  <header class="barra">
+    <div class="barra-superior">
+      <span class="marca">LogiRed</span>
+      <div class="persona">
+        <span><strong id="nombre-usuario"></strong> <span class="rol" id="rol-usuario"></span></span>
+        <button id="cerrar-sesion" type="button">Cerrar sesión</button>
+      </div>
+    </div>
+    <nav id="menu" aria-label="Secciones"></nav>
+  </header>
+
+  <main>
+    <div class="cabecera-seccion">
+      <div>
+        <h1>Panel de flota</h1>
+        <p class="resumen" id="resumen">Cargando…</p>
+      </div>
+    </div>
+    <p class="nota">Gestiona vehículos y actualiza conductores; consulta clientes y envíos.</p>
+    <div class="tabla-envoltura">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th scope="col">Módulo</th>
+            <th scope="col">Consultar</th>
+            <th scope="col">Crear</th>
+            <th scope="col">Editar</th>
+            <th scope="col">Eliminar</th>
+            <th scope="col"><span class="oculto">Abrir</span></th>
+          </tr>
+        </thead>
+        <tbody id="lista"></tbody>
+      </table>
+    </div>
+    <p class="nota">Cada microservicio valida su token y su rol: si una operación no está permitida, responde 403 aunque se intente hacer a mano.</p>
+  </main>
+  <div id="mensajes"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/sesion.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/inicio.js"></script>
+</body>
+</html>

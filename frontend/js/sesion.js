@@ -24,7 +24,7 @@ async function iniciarSesion(email, password) {
 function cerrarSesion() {
   sessionStorage.removeItem('token');
   sessionStorage.removeItem('usuario');
-  location.href = 'login.html';
+  location.href = '/login.html';
 }
 
 // Cada página llama a esto al cargar: sin sesión → login.
@@ -32,7 +32,7 @@ function cerrarSesion() {
 function exigirSesion(...roles) {
   const usuario = usuarioActual();
   if (!usuario) {
-    location.href = 'login.html';
+    location.href = '/login.html';
     return null;
   }
   if (roles.length && !roles.includes(usuario.rol)) {
@@ -42,9 +42,25 @@ function exigirSesion(...roles) {
   return usuario;
 }
 
-// Encabezado común: nombre, rol y botón de cerrar sesión
+// Menú según el rol: Inicio, los módulos con pantalla a los que el rol
+// tiene acceso (config.js → MODULOS) y Mi perfil.
+function pintarMenu(usuario) {
+  const menu = document.getElementById('menu');
+  if (!menu) return;
+  const actual = location.pathname.split('/').pop();
+  const enlaces = [{ texto: 'Inicio', href: PAGINA_POR_ROL[usuario.rol] }];
+  for (const m of Object.values(MODULOS)) {
+    if (m.pagina && m.permisos[usuario.rol]) enlaces.push({ texto: m.nombre, href: `/${m.pagina}` });
+  }
+  enlaces.push({ texto: 'Mi perfil', href: '/perfil.html' });
+  menu.innerHTML = enlaces.map((e) =>
+    `<a href="${e.href}"${e.href.endsWith(`/${actual}`) ? ' aria-current="page"' : ''}>${e.texto}</a>`).join('');
+}
+
+// Encabezado común: nombre, rol, menú y botón de cerrar sesión
 function pintarEncabezado(usuario) {
   document.getElementById('nombre-usuario').textContent = usuario.nombre;
   document.getElementById('rol-usuario').textContent = usuario.rol;
   document.getElementById('cerrar-sesion').onclick = cerrarSesion;
+  pintarMenu(usuario);
 }
