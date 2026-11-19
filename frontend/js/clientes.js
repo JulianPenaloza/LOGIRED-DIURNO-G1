@@ -37,7 +37,7 @@ async function cargar() {
   const ciudad = document.getElementById('filtro-ciudad').value.trim();
   const consulta = ciudad ? `?ciudad=${encodeURIComponent(ciudad)}` : '';
   try {
-    const datos = await api(`/clientes${consulta}`);
+    const datos = await api(`/clientes${consulta}`, { servicio: 'clientes' });
     if (datos === null) return;             // sin sesión: ya se volvió al login
     clientes = datos;
     pintar(ciudad);
@@ -51,7 +51,7 @@ async function crear() {
   const datos = await pedirDatos('Crear cliente', camposCliente, {}, 'Crear cliente');
   if (!datos) return;
   try {
-    await api('/clientes', { method: 'POST', body: datos });
+    await api('/clientes', { method: 'POST', body: datos, servicio: 'clientes' });
     mostrarMensaje(`Cliente creado: ${datos.nombre}`);
     cargar();
   } catch (error) { mostrarError(error); }
@@ -61,7 +61,7 @@ async function editar(c) {
   const datos = await pedirDatos('Editar cliente', camposCliente, c);
   if (!datos) return;
   try {
-    await api(`/clientes/${c.id}`, { method: 'PUT', body: datos });
+    await api(`/clientes/${c.id}`, { method: 'PUT', body: datos, servicio: 'clientes' });
     mostrarMensaje('Cambios guardados');
     cargar();
   } catch (error) { mostrarError(error); }
@@ -70,7 +70,7 @@ async function editar(c) {
 async function eliminar(c) {
   if (!(await confirmar(`¿Eliminar a ${c.nombre}?`, 'Eliminar cliente'))) return;
   try {
-    await api(`/clientes/${c.id}`, { method: 'DELETE' });
+    await api(`/clientes/${c.id}`, { method: 'DELETE', servicio: 'clientes' });
     mostrarMensaje(`Cliente eliminado: ${c.nombre}`);
     cargar();
   } catch (error) { mostrarError(error); }

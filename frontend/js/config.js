@@ -1,8 +1,23 @@
 // =====================================================================
 // CONFIGURACIÓN DEL FRONTEND
-// Detrás del gateway de Apache, la API vive en '/api' (mismo origen).
+// En despliegue, la API se consume por el gateway en el mismo origen.
+// Para desarrollo local puede cambiarse API_USAR_GATEWAY a false.
 // =====================================================================
 const API_USUARIOS = '/api';
+
+const API_USUARIOS_LOCAL = 'http://localhost:3001';
+const API_CLIENTES = 'http://localhost:3002';
+const API_CONDUCTORES = 'http://localhost:3004';
+const API_VEHICULOS = 'http://localhost:3005';
+
+const API_SERVICIOS = {
+  usuarios: API_USUARIOS_LOCAL,
+  clientes: API_CLIENTES,
+  conductores: API_CONDUCTORES,
+  vehiculos: API_VEHICULOS,
+};
+
+const API_USAR_GATEWAY = true;
 
 // Página de inicio de cada rol (a dónde lleva el login)
 const PAGINA_POR_ROL = {

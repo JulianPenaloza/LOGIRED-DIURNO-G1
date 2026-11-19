@@ -9,7 +9,10 @@ const camposUsuario = (creando) => [
   { nombre: 'nombre', etiqueta: 'Nombre' },
   { nombre: 'email', etiqueta: 'Email', tipo: 'email' },
   { nombre: 'rol', etiqueta: 'Rol', tipo: 'select',
-    opciones: ROLES.map((rol) => ({ valor: rol, texto: rol })) },
+    opciones: [
+      { valor: '', texto: 'Seleccione un rol' },
+      ...ROLES.map((rol) => ({ valor: rol, texto: rol })),
+    ] },
   { nombre: 'activo', etiqueta: 'Estado', tipo: 'select',
     opciones: [{ valor: 'true', texto: 'Activo' }, { valor: 'false', texto: 'Inactivo' }] },
   { nombre: 'password', etiqueta: creando ? 'Contraseña' : 'Nueva contraseña (opcional)',
@@ -47,8 +50,12 @@ async function cargar() {
 
 async function crear() {
   const datos = await pedirDatos('Crear usuario', camposUsuario(true),
-    { rol: 'lector', activo: 'true' }, 'Crear usuario');
+    { activo: 'true' }, 'Crear usuario');
   if (!datos) return;
+  if (!ROLES.includes(datos.rol)) {
+    mostrarMensaje('Seleccione un rol válido.', 'error');
+    return;
+  }
   try {
     await api('/usuarios', { method: 'POST', body: aCuerpo(datos) });
     mostrarMensaje(`Usuario creado: ${datos.nombre}`);
