@@ -3,9 +3,22 @@
 // Aquí se registran los middlewares, las rutas y el manejo de errores.
 // =====================================================================
 const express = require('express');
+const cors = require('cors');
 const clientesRoutes = require('./routes/clientes.routes');
 
 const app = express();
+
+const corsOptions = {
+  origin: [
+    'null',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 
 // Middleware: convierte el cuerpo JSON de la petición en un objeto (req.body)
 app.use(express.json());
