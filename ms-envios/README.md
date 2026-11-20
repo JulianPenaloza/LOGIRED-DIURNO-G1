@@ -1,48 +1,24 @@
-# ms-usuarios · Plantilla del Taller 1 (Módulo 3)
+﻿# ms-envios (Puerto 3003)
 
-Redes y Servicios Multimedia · UAO · Microservicio de **usuarios** de la aplicación,
-con **Node.js + Express** organizado en capas. Es el microservicio común de todos los grupos
-y, en esta versión, la plantilla para construir el suyo: cópienla y adapten **todas** las capas
-a su propia entidad.
+Microservicio de **envíos** de **LogiRed** (`envios_db`), construido con **Node.js + Express** y **MySQL**. Gestiona las guías de envío y consulta `ms-clientes` (`http://127.0.0.1:3002`) para validar `cliente_id` y componer los datos del cliente en las consultas.
 
-Esta es la versión del Taller 1: datos en memoria y tres operaciones. La versión completa
-(MySQL, contraseña cifrada, inicio de sesión y tokens JWT) se entrega en el Taller 3.
+## Variables de entorno (`.env`)
+Copia `.env.example` a `.env` (nunca subas `.env` al repositorio):
 
-## Cómo ejecutarlo
+- `PORT=3003`
+- `HOST=127.0.0.1`
+- `DB_HOST=172.24.0.134`
+- `DB_PORT=3306`
+- `DB_NAME=envios_db`
+- `DB_USER=envios_user`
+- `DB_PASSWORD=cambiar_por_clave_segura`
+- `JWT_SECRET=cambiar_por_secreto_jwt_del_grupo`
+- `JWT_EXPIRA=8h`
+- `CLIENTES_URL=http://127.0.0.1:3002`
 
-Requisitos: Node.js LTS 22 o superior (`node -v`).
+## Despliegue (Taller 3 - M3)
 
-```
-npm install                 # descarga Express en node_modules
-copy .env.example .env      # en Windows (en Linux/Mac: cp .env.example .env)
-npm run dev                 # inicia y se reinicia solo al guardar cambios
-```
-
-Prueben en el navegador: http://localhost:3001/health y http://localhost:3001/usuarios
-
-## Capas
-
-| Archivo | Capa | Responsabilidad |
-|---|---|---|
-| src/index.js | Arranque | Lee PORT y HOST y pone el servidor a escuchar |
-| src/app.js | Configuración | Middlewares, /health, montaje de rutas, manejo de errores |
-| src/routes/usuarios.routes.js | Presentación | Método HTTP + URI → función del controlador |
-| src/controllers/usuarios.controller.js | Presentación | Lee la petición, llama al servicio, arma la respuesta |
-| src/services/usuarios.service.js | Lógica de negocio | Validaciones y reglas (email único); no conoce HTTP ni la base de datos |
-| src/repositories/usuarios.repository.js | Acceso a datos | Guarda y consulta (en memoria en el Taller 1) |
-| src/models/usuario.js | Modelo | Atributos de la entidad y su validación |
-| src/utils/http-error.js | Utilidad | Error con código de estado HTTP |
-
-## Endpoints (Taller 1)
-
-| Método | URI | Respuesta |
-|---|---|---|
-| GET | /health | 200 `{"servicio":"ms-usuarios","estado":"ok"}` |
-| GET | /usuarios | 200 arreglo de usuarios |
-| GET | /usuarios/:id | 200 usuario · 400 id inválido · 404 no existe |
-| POST | /usuarios | 201 usuario creado · 400 datos inválidos · 409 email repetido |
-
-Ejemplo de cuerpo para POST:
-`{"nombre": "Marta Ríos", "email": "marta.rios@empresa.com", "rol": "despacho"}`
-
-Los roles válidos se configuran en el archivo .env (`ROLES=administrador,despacho,flota`).
+1. Base de datos en `servidor1` (`172.24.0.134`): ejecuta `deploy/crear-bd-envios.sql` en MySQL (ajustando la contraseña del entorno) y carga el esquema desde `servidor2` con `mysql -h 172.24.0.134 -u envios_user -p envios_db < db/schema.sql`.
+2. Dependencias y `.env` en `servidor2` (`172.24.0.132`): entra a `/srv/logired/app/ms-envios`, ejecuta `npm ci --omit=dev`, copia `.env.example` a `.env` y ajusta permisos (`chmod 640 .env` y grupo `nodeapps`).
+3. Servicio `systemd`: copia `deploy/ms-envios.service` a `/etc/systemd/system/`, ejecuta `sudo systemctl daemon-reload` y habilita con `sudo systemctl enable --now ms-envios`.
+4. Verificación: consulta `http://127.0.0.1:3003/health` localmente y `http://app.logired.com.co/api/envios` a través del gateway.
