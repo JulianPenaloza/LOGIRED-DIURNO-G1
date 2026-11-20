@@ -16,7 +16,8 @@ de cada envío (ver la sección Relaciones).
 
 Requisitos: Node.js LTS 22 o superior (`node -v`) y MySQL Server 8.
 
-**1. Crear la base de datos y su usuario** (en Workbench o en la consola de MySQL, como `root`):
+**1. Crear la base de datos y su usuario** (en Workbench o en la consola de MySQL, como `root`).
+Este bloque es para su PC; en servidor1 se usa `deploy/crear-bd-clientes.sql` (ver Despliegue en servidores):
 
 ```sql
 CREATE DATABASE clientes_db;
@@ -63,18 +64,68 @@ http://127.0.0.1:3002/health (público). Para consultar `/clientes` necesita un 
 
 ## Despliegue en servidores (Taller 3)
 
-En el despliegue de LogiRed, MySQL corre en **servidor1** (172.24.0.134) y el microservicio en
-**servidor2** (172.24.0.132) como servicio systemd, detrás del gateway Apache
-(`http://app.logired.com.co/api/clientes`). Los archivos están en `deploy/`:
+En el despliegue de LogiRed, la base de datos corre en **servidor1** y el microservicio en
+**servidor2**, como servicio systemd, detrás del gateway Apache. El usuario final entra por
+`http://app.logired.com.co`.
+
+| Componente | Máquina | Dirección y puerto | Notas |
+|---|---|---|---|
+| MySQL (`clientes_db`) | servidor1 · 172.24.0.134 | 3306 | Solo acepta conexiones de servidor2 (ufw y usuario `@'172.24.0.132'`) |
+| ms-clientes | servidor2 · 172.24.0.132 | 3002 (`127.0.0.1`) | Servicio systemd, usuario sin privilegios, reinicio automático |
+| Gateway Apache | servidor2 | 80 | `/api/clientes` → `http://127.0.0.1:3002/clientes` |
+| Frontend | servidor2 | 80 (`/var/www/app`) | Pantalla `clientes.html` |
+| DNS (bind9) | servidor1 | 53 | `app.logired.com.co` → 172.24.0.132 |
+
+Los archivos del despliegue están en `deploy/`:
 
 | Archivo | Qué hace |
 |---|---|
-| `deploy/crear-bd-clientes.sql` | Crea `clientes_db` y `clientes_user` (solo accesible desde servidor2) |
+| `deploy/crear-bd-clientes.sql` | Crea `clientes_db` y `clientes_user` (solo accesible desde servidor2). Cambie la clave de ejemplo antes de ejecutarlo |
 | `deploy/ms-clientes.service` | Servicio systemd que arranca el microservicio con su `.env` |
 | `deploy/app.conf` | Sitio Apache (gateway) con las rutas `/api/...` |
+| `deploy/README.md` | Pasos detallados del despliegue |
 
-En servidor2 el `.env` usa `DB_HOST=172.24.0.134` y la misma `JWT_SECRET` de ms-usuarios.
-El `.env` real nunca se sube al repositorio.
+### Pasos
+
+1. **servidor1.** Ejecute `deploy/crear-bd-clientes.sql` como `root` de MySQL y después
+   `db/schema.sql` sobre `clientes_db`. Configure MySQL para escuchar en la red interna
+   (`bind-address`) y abra el puerto 3306 solo para servidor2 con ufw.
+2. **servidor2.** El código del repositorio está en `/srv/logired/app` y este servicio en
+   `/srv/logired/app/ms-clientes`. En esa carpeta cree el `.env` a partir de `.env.example`, con `DB_HOST=172.24.0.134`, la
+   clave del usuario de la base y la misma `JWT_SECRET` de ms-usuarios. El `.env` real nunca
+   se sube al repositorio.
+3. **Servicio.** Copie `deploy/ms-clientes.service` a `/etc/systemd/system/`, y ejecute
+   `sudo systemctl daemon-reload` y `sudo systemctl enable --now ms-clientes`. El servicio
+   arranca con `WorkingDirectory=/srv/logired/app/ms-clientes` y
+   `node --env-file=.env src/index.js`, por eso el `.env` debe estar en esa carpeta.
+4. **Gateway.** Agregue la ruta de `deploy/app.conf` al sitio de Apache, valide con
+   `sudo apache2ctl configtest` y recargue con `sudo systemctl reload apache2`.
+
+### Operación
+
+| Acción | Comando (en servidor2) |
+|---|---|
+| Ver el estado | `systemctl status ms-clientes` |
+| Ver los registros | `sudo journalctl -u ms-clientes -n 50 --no-pager` |
+| Reiniciar | `sudo systemctl restart ms-clientes` |
+| Detener (prueba del 503) | `sudo systemctl stop ms-clientes` |
+
+### Cómo comprobar el despliegue
+
+| Prueba | Comando | Resultado esperado |
+|---|---|---|
+| Servicio activo | `systemctl is-active ms-clientes` | `active` |
+| Salud (en servidor2) | `curl -s http://127.0.0.1:3002/health` | `{"servicio":"ms-clientes","estado":"ok"}` |
+| Gateway sin token | `curl -i http://app.logired.com.co/api/clientes` | `401 Unauthorized` |
+| Servicio detenido | `curl -i http://app.logired.com.co/api/clientes` | `503 Service Unavailable` (lo responde Apache) |
+| Colección de Postman | Ejecutar la colección con base `http://app.logired.com.co/api` | Los 18 casos con el código esperado |
+
+## Frontend
+
+La pantalla `clientes.html` del frontend consume `/api/clientes` a través del gateway y
+muestra id, nombre, documento, teléfono, email y ciudad. Los botones de crear, editar y
+eliminar solo aparecen al rol despacho (y administrador); la protección real está en este
+servicio, que responde 403 a los demás roles.
 
 ## Capas
 
@@ -245,5 +296,5 @@ ms-envios guarda el `cliente_id` de cada envío y le pide a este servicio los da
 ms-envios debe reenviar en cada consulta el token que recibió del usuario (cabecera
 `Authorization`), porque este servicio también lo exige: sin token responde 401.
 
-Cualquier cambio en el nombre de estos campos o en estas URIs rompe ms-envios, por eso se
+Detrás del gateway, la ruta pública es `/api/clientes` (puerto interno 3002). Cualquier cambio en el nombre de estos campos, en estas URIs o en el puerto rompe ms-envios, por eso se
 avisa al grupo antes de hacerlo.
