@@ -21,6 +21,7 @@ function pintar(ciudad) {
   document.getElementById('resumen').textContent = `${clientes.length} clientes${sufijo}`;
   document.getElementById('lista').innerHTML = clientes.map((c) => `
     <tr>
+      <td class="id">${esc(c.id)}</td>
       <td>${esc(c.nombre)}</td>
       <td>${esc(c.documento)}</td>
       <td>${esc(c.telefono)}</td>

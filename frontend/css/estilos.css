@@ -299,6 +299,8 @@ main { max-width: 1120px; margin: 0 auto; padding: 2rem var(--margen-pagina) 4re
 }
 .tabla td { padding: 0.85rem 1rem; border-bottom: 1px solid #e6ebef; vertical-align: middle; }
 .tabla td:first-child { font-weight: 600; }
+.tabla td.id { color: var(--tinta-suave); font-weight: 600; }
+.tabla td.id + td { font-weight: 600; }
 .tabla tbody tr:hover { background: #fff8e1; box-shadow: inset 4px 0 0 var(--senal); }
 .tabla tr:last-child td { border-bottom: 0; }
 .titulo-libro {
