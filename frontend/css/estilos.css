@@ -1,22 +1,37 @@
 /* =====================================================================
-   Biblioteca · estilos
-   Verde de lámpara de sala de lectura, papel frío y lomos de libro.
+   LogiRed · estilos
+   Señalización vial: asfalto, línea amarilla de eje y azul de contenedor.
+   Se mantienen los nombres de clases y de variables del diseño anterior,
+   de modo que ninguna pantalla del grupo necesita cambios en su HTML.
    ===================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
 :root {
-  --papel: #f4f5f2;
+  --asfalto: #1b2530;
+  --asfalto-profundo: #121a22;
+  --senal: #f2b705;
+  --senal-oscuro: #d99f00;
+  --acero: #2f5d7c;
+  --acero-oscuro: #244a63;
+
+  --papel: #eef1f3;
   --superficie: #ffffff;
-  --tinta: #1a221e;
-  --tinta-suave: #5a655f;
-  --linea: #d8ddd8;
-  --verde: #1f4d3a;
-  --verde-oscuro: #15382a;
-  --laton: #a67c2e;
-  --rojo: #a3352b;
-  --rojo-fondo: #f8e9e6;
-  --alerta-fondo: #f7f0de;
-  --radio: 6px;
-  --letra-titulo: 'Literata', Georgia, serif;
-  --letra-texto: 'Public Sans', system-ui, sans-serif;
+  --tinta: #17202a;
+  --tinta-suave: #55626e;
+  --linea: #d3d9de;
+  --rojo: #b3261e;
+  --rojo-fondo: #fbe9e7;
+  --alerta-fondo: #fff4d6;
+
+  /* Nombres heredados del diseño anterior (otras pantallas pueden usarlos) */
+  --verde: var(--acero);
+  --verde-oscuro: var(--acero-oscuro);
+  --laton: var(--senal);
+
+  --margen-pagina: clamp(1rem, 4vw, 2.5rem);
+  --radio: 4px;
+  --letra-titulo: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --letra-texto: 'IBM Plex Sans', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -28,26 +43,28 @@ body {
   font: 16px/1.5 var(--letra-texto);
 }
 
-h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 600; margin: 0; line-height: 1.2; }
+h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 700; margin: 0; line-height: 1.1; }
 
-:focus-visible { outline: 3px solid var(--laton); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--acero); outline-offset: 2px; }
+.barra :focus-visible, .sala :focus-visible { outline-color: var(--senal); }
 
 .oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 /* ---------- Botones ---------- */
 .boton {
-  font: 600 0.9rem var(--letra-texto);
-  border: 1px solid var(--verde);
-  background: var(--verde);
-  color: #fff;
-  padding: 0.55rem 1rem;
+  font: 600 0.92rem var(--letra-texto);
+  border: 1px solid var(--senal-oscuro);
+  background: var(--senal);
+  color: var(--asfalto);
+  padding: 0.55rem 1.1rem;
   border-radius: var(--radio);
   cursor: pointer;
   white-space: nowrap;
 }
-.boton:hover { background: var(--verde-oscuro); }
-.boton-suave { background: transparent; color: var(--verde); border-color: var(--linea); }
-.boton-suave:hover { background: #e9eee9; }
+.boton:hover { background: var(--senal-oscuro); }
+.boton:active { transform: translateY(1px); }
+.boton-suave { background: transparent; color: var(--asfalto); border-color: var(--linea); }
+.boton-suave:hover { background: #e2e8ec; }
 .boton-peligro { background: transparent; color: var(--rojo); border-color: transparent; }
 .boton-peligro:hover { background: var(--rojo-fondo); }
 
@@ -55,39 +72,50 @@ h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 600; margin: 0; line
 .entrada {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
 }
 
 .sala {
-  background: var(--verde);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 48px 48px,
+    var(--asfalto);
   color: #fff;
-  padding: 3rem;
+  padding: clamp(2rem, 4vw, 4rem);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   overflow: hidden;
 }
-.sala h1 { font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 500; }
-.sala p { max-width: 32ch; color: #cfe0d6; margin: 0.75rem 0 0; }
+.sala h1 { font-size: clamp(4rem, 8vw, 9rem); line-height: 0.95; letter-spacing: 0.01em; }
+.sala p { max-width: 34ch; color: #b9c6d1; margin: 1rem auto 0; font-size: clamp(1.1rem, 1.6vw, 1.6rem); }
 
-/* El estante: lomos de libro dibujados con CSS */
+/* Mapa de ruta: la carretera con su línea de eje */
+.ruta-deco { width: 100%; max-width: 900px; margin-top: clamp(2.5rem, 8vh, 5rem); }
+.ruta-deco svg { display: block; width: 100%; height: auto; }
+.ruta-deco .ciudad { font: 700 26px var(--letra-titulo); fill: #fff; }
+.ruta-deco .ciudad-nota { font: 400 15px var(--letra-texto); fill: #8fa1b0; }
+
+/* Decoración anterior (pilas de contenedores), por si algún login aún la usa */
 .estante-deco {
   display: flex;
   align-items: flex-end;
   gap: 4px;
   height: min(380px, 45vh);
-  border-bottom: 12px solid #2f2116;
+  border-bottom: 10px solid var(--asfalto-profundo);
   padding: 0 0.5rem;
   margin-top: 3rem;
 }
 .estante-deco span {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font: 500 0.9rem var(--letra-titulo);
-  color: rgba(255, 255, 255, 0.88);
+  font: 600 0.95rem var(--letra-titulo);
+  color: rgba(255, 255, 255, 0.9);
   padding: 1rem 0.7rem;
-  border-radius: 3px 3px 0 0;
-  box-shadow: inset -3px 0 0 rgba(0, 0, 0, 0.18), inset 0 10px 0 rgba(255, 255, 255, 0.08);
+  border-radius: 2px 2px 0 0;
+  box-shadow: inset -3px 0 0 rgba(0, 0, 0, 0.2), inset 0 8px 0 rgba(255, 255, 255, 0.1);
   white-space: nowrap;
   overflow: hidden;
 }
@@ -97,10 +125,10 @@ h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 600; margin: 0; line
   place-items: center;
   padding: 2rem 1.25rem;
 }
-.acceso form { width: min(380px, 100%); }
-.acceso h2 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+.acceso form { width: min(440px, 100%); font-size: clamp(1rem, 1.1vw, 1.2rem); }
+.acceso h2 { font-size: clamp(2.1rem, 2.6vw, 3rem); margin-bottom: 0.25rem; }
 .acceso .indicacion { color: var(--tinta-suave); margin: 0 0 1.75rem; }
-.acceso .boton { width: 100%; padding: 0.75rem; margin-top: 0.5rem; }
+.acceso .boton { width: 100%; padding: 0.75rem; margin-top: 0.5rem; font-size: 1rem; }
 .error-acceso { color: var(--rojo); min-height: 1.5em; margin: 0.75rem 0 0; }
 
 .cuentas {
@@ -113,7 +141,7 @@ h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 600; margin: 0; line
 .cuentas ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
 .cuentas button {
   font: inherit;
-  color: var(--verde);
+  color: var(--acero);
   background: none;
   border: 0;
   padding: 0;
@@ -127,19 +155,29 @@ h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 600; margin: 0; line
 .campo input, .campo select {
   font: inherit;
   padding: 0.6rem 0.7rem;
-  border: 1px solid var(--linea);
+  border: 1px solid #b9c3cb;
   border-radius: var(--radio);
   background: var(--superficie);
   color: var(--tinta);
   width: 100%;
 }
-.campo input:focus, .campo select:focus { border-color: var(--verde); outline: 2px solid #c9dcd1; }
+.campo input:focus, .campo select:focus { border-color: var(--acero); outline: 2px solid #bcd0de; }
 
 /* ---------- Páginas de rol ---------- */
 .barra {
-  background: var(--verde);
+  background: var(--asfalto);
   color: #fff;
-  padding: 0.9rem clamp(1rem, 4vw, 2.5rem) 0;
+  padding: 0.9rem var(--margen-pagina) 0;
+}
+/* La línea discontinua del centro de la carretera, bajo el encabezado */
+.barra::after {
+  content: "";
+  display: block;
+  height: 12px;
+  margin: 0 calc(-1 * var(--margen-pagina));
+  background:
+    repeating-linear-gradient(90deg, var(--senal) 0 28px, transparent 28px 52px) 0 50% / 100% 3px no-repeat,
+    var(--asfalto-profundo);
 }
 .barra-superior {
   display: flex;
@@ -148,9 +186,16 @@ h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 600; margin: 0; line
   gap: 1rem;
   flex-wrap: wrap;
 }
-.marca { font: 500 1.35rem var(--letra-titulo); }
+.marca { display: inline-flex; align-items: center; gap: 0.6rem; font: 700 1.65rem var(--letra-titulo); }
+.marca::before {
+  content: "";
+  width: 0.8rem;
+  height: 1.1rem;
+  background: var(--senal);
+  transform: skewX(-18deg);
+}
 .persona { display: flex; align-items: center; gap: 0.9rem; font-size: 0.9rem; }
-.persona .rol { color: #cfe0d6; }
+.persona .rol { color: var(--senal); font-weight: 600; }
 .persona button {
   font: 600 0.85rem var(--letra-texto);
   background: transparent;
@@ -160,17 +205,19 @@ h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 600; margin: 0; line
   padding: 0.35rem 0.7rem;
   cursor: pointer;
 }
+.persona button:hover { background: rgba(255, 255, 255, 0.1); }
 .modo {
   font-size: 0.78rem;
-  background: var(--laton);
-  color: #fff;
+  background: var(--senal);
+  color: var(--asfalto);
+  font-weight: 600;
   border-radius: 99px;
   padding: 0.1rem 0.6rem;
 }
 
 #menu { display: flex; gap: 0.25rem; margin-top: 0.9rem; overflow-x: auto; }
 #menu a {
-  color: #cfe0d6;
+  color: #b9c6d1;
   text-decoration: none;
   padding: 0.6rem 0.9rem 0.7rem;
   border-bottom: 3px solid transparent;
@@ -178,9 +225,9 @@ h1, h2, h3 { font-family: var(--letra-titulo); font-weight: 600; margin: 0; line
   white-space: nowrap;
 }
 #menu a:hover { color: #fff; }
-#menu a[aria-current] { color: #fff; border-bottom-color: var(--laton); }
+#menu a[aria-current] { color: #fff; border-bottom-color: var(--senal); }
 
-main { max-width: 1120px; margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 2.5rem) 4rem; }
+main { max-width: 1120px; margin: 0 auto; padding: 2rem var(--margen-pagina) 4rem; }
 
 .cabecera-seccion {
   display: flex;
@@ -190,19 +237,19 @@ main { max-width: 1120px; margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 2.5rem)
   flex-wrap: wrap;
   margin-bottom: 1.5rem;
 }
-.cabecera-seccion h1 { font-size: 2rem; }
+.cabecera-seccion h1 { font-size: 2.6rem; }
 .resumen { margin: 0.25rem 0 0; color: var(--tinta-suave); }
 .herramientas { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
 .herramientas input[type=search] {
   font: inherit;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--linea);
+  border: 1px solid #b9c3cb;
   border-radius: var(--radio);
   min-width: 15rem;
   background: var(--superficie);
 }
 
-/* ---------- Libros: cada libro es un lomo en el estante ---------- */
+/* ---------- Tarjetas de lista (diseño anterior, se conservan) ---------- */
 .estante { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
 .libro {
   display: grid;
@@ -219,63 +266,67 @@ main { max-width: 1120px; margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 2.5rem)
   align-self: stretch;
   margin: -0.9rem 0;
   background:
-    linear-gradient(var(--laton), var(--laton)) 0 14px / 100% 2px no-repeat,
-    linear-gradient(var(--laton), var(--laton)) 0 20px / 100% 2px no-repeat,
+    linear-gradient(var(--senal), var(--senal)) 0 14px / 100% 2px no-repeat,
+    linear-gradient(var(--senal), var(--senal)) 0 20px / 100% 2px no-repeat,
     var(--lomo);
 }
-.libro h3 { font-size: 1.15rem; }
+.libro h3 { font-size: 1.3rem; }
 .libro .autor { margin: 0.15rem 0 0; color: var(--tinta-suave); }
 .libro .ficha { margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--tinta-suave); }
 .ejemplares { margin: 0; color: var(--tinta-suave); font-size: 0.9rem; text-align: right; }
-.ejemplares strong { display: block; font: 600 1.4rem var(--letra-titulo); color: var(--tinta); }
+.ejemplares strong { display: block; font: 700 1.6rem var(--letra-titulo); color: var(--tinta); }
 .ejemplares.agotado strong { color: var(--rojo); }
 .acciones { display: flex; gap: 0.25rem; justify-content: flex-end; }
 .vacio { color: var(--tinta-suave); padding: 2rem 1rem; text-align: center; }
 
-/* ---------- Tablas (préstamos, usuarios) ---------- */
+/* ---------- Tablas: como una guía de despacho ---------- */
 .tabla-envoltura {
   background: var(--superficie);
   border: 1px solid var(--linea);
+  border-top: 4px solid var(--asfalto);
   border-radius: var(--radio);
   overflow-x: auto;
 }
 .tabla { width: 100%; border-collapse: collapse; min-width: 640px; }
 .tabla th {
   text-align: left;
-  font-size: 0.82rem;
-  color: var(--tinta-suave);
+  font-size: 0.85rem;
+  color: var(--tinta);
   font-weight: 600;
+  background: #e6ebef;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--linea);
+  border-bottom: 2px solid var(--asfalto);
 }
-.tabla td { padding: 0.8rem 1rem; border-bottom: 1px solid #edf0ed; vertical-align: middle; }
+.tabla td { padding: 0.85rem 1rem; border-bottom: 1px solid #e6ebef; vertical-align: middle; }
+.tabla td:first-child { font-weight: 600; }
+.tabla tbody tr:hover { background: #fff8e1; box-shadow: inset 4px 0 0 var(--senal); }
 .tabla tr:last-child td { border-bottom: 0; }
 .titulo-libro {
   display: block;
   font-family: var(--letra-titulo);
-  font-weight: 600;
+  font-weight: 700;
   border-left: 5px solid var(--lomo);
   padding-left: 0.6rem;
 }
 .titulo-libro + .sub { padding-left: calc(0.6rem + 5px); }
 .sub { display: block; color: var(--tinta-suave); font-size: 0.85rem; }
 
-/* El estado del préstamo, como el sello de la ficha */
+/* Estado, como el sello de una guía */
 .sello {
   display: inline-block;
   font-size: 0.8rem;
   font-weight: 700;
   padding: 0.1rem 0.55rem;
   border: 1.5px solid currentColor;
-  border-radius: 4px;
+  border-radius: 3px;
 }
-.sello-activo { color: var(--verde); }
+.sello-activo { color: var(--acero); }
 .sello-devuelto { color: var(--tinta-suave); }
 .sello-vencido { color: var(--rojo); transform: rotate(-3deg); }
 
-.etiqueta-rol { font-size: 0.85rem; background: #e9eee9; border-radius: 4px; padding: 0.1rem 0.5rem; }
+.etiqueta-rol { font-size: 0.85rem; font-weight: 600; background: #e2e8ec; border-radius: 3px; padding: 0.1rem 0.5rem; }
 
-.filtro { display: flex; border: 1px solid var(--linea); border-radius: var(--radio); overflow: hidden; }
+.filtro { display: flex; border: 1px solid #b9c3cb; border-radius: var(--radio); overflow: hidden; }
 .filtro button {
   font: 600 0.85rem var(--letra-texto);
   border: 0;
@@ -284,8 +335,8 @@ main { max-width: 1120px; margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 2.5rem)
   padding: 0.5rem 0.85rem;
   cursor: pointer;
 }
-.filtro button + button { border-left: 1px solid var(--linea); }
-.filtro button[aria-pressed=true] { background: #e3ebe5; color: var(--verde); }
+.filtro button + button { border-left: 1px solid #b9c3cb; }
+.filtro button[aria-pressed=true] { background: var(--asfalto); color: #fff; }
 
 /* ---------- Mensajes ---------- */
 #mensajes {
@@ -301,34 +352,38 @@ main { max-width: 1120px; margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 2.5rem)
   margin: 0;
   padding: 0.75rem 1rem;
   border-radius: var(--radio);
-  background: var(--tinta);
+  border-left: 5px solid var(--senal);
+  background: var(--asfalto);
   color: #fff;
   font-size: 0.92rem;
 }
-.mensaje-error { background: var(--rojo); }
+.mensaje-error { background: var(--rojo); border-left-color: #ffb4ab; }
 .mensaje-alerta {
   background: var(--alerta-fondo);
   color: #6b4f14;
-  border: 1px solid #e6d3a3;
+  border: 1px solid #ecd48f;
+  border-left: 5px solid var(--senal);
   margin-bottom: 1rem;
 }
 
 /* ---------- Diálogo de formularios ---------- */
 dialog {
   border: 0;
-  border-radius: 10px;
+  border-top: 5px solid var(--senal);
+  border-radius: 6px;
   padding: 1.75rem;
   width: min(460px, calc(100vw - 2rem));
-  box-shadow: 0 20px 60px rgba(21, 56, 42, 0.25);
+  box-shadow: 0 20px 60px rgba(18, 26, 34, 0.35);
 }
-dialog::backdrop { background: rgba(21, 56, 42, 0.45); }
-.formulario h2 { font-size: 1.35rem; margin-bottom: 1.25rem; }
+dialog::backdrop { background: rgba(18, 26, 34, 0.55); }
+.formulario h2 { font-size: 1.6rem; margin-bottom: 1.25rem; }
 .acciones-form { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }
 
 /* ---------- Pantallas pequeñas ---------- */
 @media (max-width: 760px) {
   .entrada { grid-template-columns: 1fr; }
   .sala { padding: 1.75rem 1.25rem 0; }
+  .ruta-deco { margin-top: 1rem; }
   .estante-deco { height: 120px; margin-top: 1.5rem; }
   .estante-deco span:nth-child(n+7) { display: none; }
   .libro { grid-template-columns: 10px 1fr auto; }
@@ -344,6 +399,7 @@ dialog::backdrop { background: rgba(21, 56, 42, 0.45); }
 .ficha-perfil {
   background: var(--superficie);
   border: 1px solid var(--linea);
+  border-top: 4px solid var(--asfalto);
   border-radius: var(--radio);
   padding: 1.5rem 1.75rem;
   max-width: 560px;
