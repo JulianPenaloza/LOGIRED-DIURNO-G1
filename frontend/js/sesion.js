@@ -53,8 +53,17 @@ function pintarMenu(usuario) {
     if (m.pagina && m.permisos[usuario.rol]) enlaces.push({ texto: m.nombre, href: `/${m.pagina}` });
   }
   enlaces.push({ texto: 'Mi perfil', href: '/perfil.html' });
-  menu.innerHTML = enlaces.map((e) =>
-    `<a href="${e.href}"${e.href.endsWith(`/${actual}`) ? ' aria-current="page"' : ''}>${e.texto}</a>`).join('');
+  menu.innerHTML = enlaces.map((e) => {
+    const id = e.href === '/usuarios.html'
+      ? ' id="enlace-usuarios"'
+      : '';
+
+    const actualPagina = e.href.endsWith(`/${actual}`)
+      ? ' aria-current="page"'
+      : '';
+
+    return `<a href="${e.href}"${id}${actualPagina}>${e.texto}</a>`;
+  }).join('');
 }
 
 // Encabezado común: nombre, rol, menú y botón de cerrar sesión
