@@ -2,67 +2,69 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>LogiRed - Gestión de Envíos</title>
-  <style>
-    body { font-family: sans-serif; max-width: 960px; margin: 20px auto; padding: 0 16px; }
-    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background: #f4f4f4; }
-    .error { background: #ffe5e5; color: #a00; padding: 10px; border-radius: 4px; margin: 10px 0; display: none; }
-    .aviso { color: #b36b00; font-size: 0.9em; font-style: italic; }
-    form { background: #f9f9f9; padding: 14px; border: 1px solid #ddd; margin-bottom: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    form button { grid-column: span 3; padding: 8px; cursor: pointer; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LogiRed · Gestión de envíos</title>
+  <link rel="stylesheet" href="css/estilos.css" />
 </head>
 <body>
-  <header>
-    <div>
-      <strong>LogiRed</strong> — Gestión de Envíos
-    </div>
-    <div>
-      <span id="info-usuario"></span>
-      <button id="btn-salir" type="button">Cerrar sesión</button>
+  <header class="barra">
+    <div class="barra-superior">
+      <span class="marca">LogiRed</span>
+      <div class="persona">
+        <span id="info-usuario"></span>
+        <button id="btn-salir" type="button">Cerrar sesión</button>
+      </div>
     </div>
   </header>
 
-  <!-- Caja para mostrar errores 400, 403, 409, 503 -->
-  <div id="mensaje-error" class="error"></div>
+  <main>
+    <div class="cabecera-seccion">
+      <div>
+        <h1>Envíos</h1>
+        <p class="resumen">Registre y siga el estado de cada envío.</p>
+      </div>
+    </div>
 
-  <!-- Formulario para crear / editar (se oculta si el rol es flota) -->
-  <section id="seccion-formulario">
-    <h3 id="titulo-form">Nuevo envío</h3>
-    <form id="form-envio">
-      <input type="hidden" id="envio-id" />
-      <input type="text" id="codigo" placeholder="Código (ej: ENV-010)" required />
-      <input type="text" id="origen" placeholder="Origen (ej: Cali)" required />
-      <input type="text" id="destino" placeholder="Destino (ej: Bogotá)" required />
-      <select id="estado">
-        <option value="pendiente">pendiente</option>
-        <option value="en transito">en transito</option>
-        <option value="entregado">entregado</option>
-      </select>
-      <input type="number" id="cliente_id" placeholder="ID del cliente" min="1" required />
-      <input type="number" id="peso" placeholder="Peso (kg)" min="1" step="0.1" value="10" required />
-      <button type="submit" id="btn-guardar">Guardar envío</button>
-    </form>
-  </section>
+    <!-- Caja para mostrar errores 400, 403, 409, 503 -->
+    <div id="mensaje-error" class="mensaje mensaje-error" style="display:none; margin-bottom:1rem;"></div>
 
-  <!-- Tabla de envíos -->
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Código</th>
-        <th>Origen</th>
-        <th>Destino</th>
-        <th>Estado</th>
-        <th>Cliente (ms-clientes)</th>
-        <th id="col-acciones">Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-envios"></tbody>
-  </table>
+    <!-- Formulario para crear / editar (se oculta si el rol es flota) -->
+    <section id="seccion-formulario" class="tarjeta-form">
+      <h2 id="titulo-form">Nuevo envío</h2>
+      <form id="form-envio" class="form-envio">
+        <input type="hidden" id="envio-id" />
+        <input type="text" id="codigo" placeholder="Código (ej: ENV-010)" required />
+        <input type="text" id="origen" placeholder="Origen (ej: Cali)" required />
+        <input type="text" id="destino" placeholder="Destino (ej: Bogotá)" required />
+        <select id="estado">
+          <option value="pendiente">pendiente</option>
+          <option value="en transito">en transito</option>
+          <option value="entregado">entregado</option>
+        </select>
+        <input type="number" id="cliente_id" placeholder="ID del cliente" min="1" required />
+        <input type="number" id="peso" placeholder="Peso (kg)" min="1" step="0.1" value="10" required />
+        <button type="submit" id="btn-guardar" class="boton">Guardar envío</button>
+      </form>
+    </section>
+
+    <!-- Tabla de envíos -->
+    <div class="tabla-envoltura">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Estado</th>
+            <th>Cliente (ms-clientes)</th>
+            <th id="col-acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-envios"></tbody>
+      </table>
+    </div>
+  </main>
 
   <!-- Scripts en orden: primero config, luego api, al final envios -->
   <script src="js/config.js"></script>
