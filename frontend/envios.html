@@ -15,6 +15,7 @@
         <button id="btn-salir" type="button">Cerrar sesión</button>
       </div>
     </div>
+    <nav id="menu" aria-label="Secciones"></nav>
   </header>
 
   <main>
@@ -66,9 +67,15 @@
     </div>
   </main>
 
-  <!-- Scripts en orden: primero config, luego api, al final envios -->
+  <!-- Scripts en orden: config, sesion (menú), api y al final envios -->
   <script src="js/config.js"></script>
+  <script src="js/sesion.js"></script>
   <script src="js/api.js"></script>
   <script src="js/envios.js"></script>
+  <script>
+    // Menú común según el rol (el mismo de Clientes y las demás pantallas)
+    const _usuarioMenu = usuarioActual();
+    if (_usuarioMenu) pintarMenu(_usuarioMenu);
+  </script>
 </body>
 </html>
