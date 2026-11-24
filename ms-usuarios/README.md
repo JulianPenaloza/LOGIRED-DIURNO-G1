@@ -1,8 +1,7 @@
 # ms-usuarios · versión completa (Módulo 3)
 
-Redes y Servicios Multimedia · UAO. Microservicio común de todos los grupos:
-gestiona los usuarios de la aplicación, guarda las contraseñas cifradas (bcrypt)
-y entrega tokens JWT al iniciar sesión. **Nadie del grupo lo modifica**: se configura con su `.env`.
+Redes y Servicios Multimedia · UAO. Microservicio de usuarios de LogiRed:
+gestiona las cuentas, guarda contraseñas con bcrypt y emite tokens JWT al iniciar sesión.
 
 ## Cómo ejecutarlo
 
@@ -21,7 +20,7 @@ GRANT ALL PRIVILEGES ON usuarios_db.* TO 'usuarios_user'@'localhost';
 4. Copiar `.env.example` como `.env` y ajustar los roles de su empresa y el `JWT_SECRET` del grupo.
 5. `npm run dev`
 
-Usuario inicial: `admin@empresa.com` / `Admin2026*` (rol administrador).
+El esquema puede crear una cuenta administradora inicial. La contraseña no se documenta en el repositorio; obtén la credencial por un canal seguro.
 
 ## Endpoints
 
@@ -61,14 +60,9 @@ y se verifica con `JWT_SECRET`, que debe ser **la misma en todos los microservic
 - `verificarToken`: exige un token válido → 401 si falta, es inválido o venció.
 - `requiereRol('rol1', 'rol2')`: deja pasar solo esos roles → 403 a los demás.
 
-## CORS (frontend en su PC)
+## CORS
 
-ms-usuarios tiene CORS activo (`app.use(cors())` en `src/app.js`). Así, un frontend abierto
-en el navegador desde otra dirección (doble clic en el HTML, o Live Server en otro puerto)
-puede llamar a `http://localhost:3001`. Sin CORS, el navegador bloquea la respuesta y en la
-consola aparece *blocked by CORS policy*.
-
-Para conectar las pantallas de su entidad con su propio microservicio, hagan lo mismo en él:
-`npm install cors` y `app.use(cors());` antes de `app.use(express.json());`.
-
-En el Taller 3, detrás del gateway, el frontend y la API comparten dirección y CORS ya no hace falta.
+En desarrollo local, CORS permite los orígenes `null`, `http://localhost:5500` y
+`http://127.0.0.1:5500`, con los métodos GET, POST, PUT, DELETE y OPTIONS, y los
+encabezados `Content-Type` y `Authorization`. En producción, el frontend y la API comparten
+origen a través de Apache.
